@@ -44,8 +44,10 @@ public class AdminList extends AdministrationSectionExt {
 	 */
 	public Map<String, String> getLinks() {
 		LinkedHashMap<String, String> map = new LinkedHashMap<String, String>();
-		map.put("/module/smsreminder/manage.form", "smsreminder.manage_port");
-
+		map.put("/module/smsreminder/manage_port.form", "smsreminder.manage_port");
+		map.put("/module/smsreminder/manage_message.form", "smsreminder.manage_message");
+		map.put("/module/smsreminder/manage_period.form", "smsreminder.manage_period");
+		map.put("/module/smsreminder/manual_submission.form", "smsreminder.manual_submission");
 		return map;
 	}
 	
