@@ -13,14 +13,89 @@
 			   calling this script
 	</help>
 
-<!-- 
+
 	<diff>
-		<version>1.0</version>
+		<version>1.012</version>
 		<author>Nelson.Mahumane</author>
-		<date></date>
-		<description></description>
-		<sql></sql>
+		<date>10 jun 2015</date>
+		<description>Sql para criação de tabelas do modulo sms remider</description>
+		<sql>
+
+			DROP TABLE IF EXISTS message;
+			CREATE TABLE `message` (
+			`message_id` int(11) NOT NULL AUTO_INCREMENT,
+			`description` text CHARACTER SET latin1,
+			`cell_number` varchar(10) DEFAULT NULL,
+			`message_time` varchar(10) DEFAULT NULL,
+			`identifier` varchar(15) DEFAULT NULL,
+			`status` varchar(10) DEFAULT NULL,
+			`patient_id` int(11) DEFAULT NULL,
+			PRIMARY KEY (`message_id`),
+			KEY `patient_fk` (`patient_id`),
+			CONSTRAINT `patient_fk` FOREIGN KEY (`patient_id`) REFERENCES `patient` (`patient_id`)
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+			<!--CREATE TABLE `message` (
+			`message_id` int(11) NOT NULL AUTO_INCREMENT,
+			`description` text CHARACTER SET latin1,
+			`cell_number` varchar(10) DEFAULT NULL,
+			`message_time` varchar(10) DEFAULT NULL,
+			`identifier` varchar(15) DEFAULT NULL,
+			`status` varchar(10) DEFAULT NULL,
+			PRIMARY KEY (`message_id`)
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+-->
+			DROP TABLE IF EXISTS device;
+
+			CREATE TABLE `device` (
+			`device_id` int(11) NOT NULL AUTO_INCREMENT,
+			`port` varchar(10) DEFAULT NULL,
+			`schedule` varchar(20) DEFAULT NULL,
+			`sms_center` varchar(20) DEFAULT NULL,
+			`sms_text` text CHARACTER SET latin1,
+			PRIMARY KEY (`device_id`)
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+			INSERT INTO privilege(privilege,description,uuid) VALUES ('Edit Message','Editar Mensagem que é enviada para
+			os pacientes no Modulo SMS Reminder', uuid());
+<!--
+			criação da view que seleciona a lista de pacientes que tenham proxima data de fila e que tenham telemóvel
+
+			CREATE OR REPLACE VIEW `notificacao_fila` AS
+			select (to_days(`obs`.`value_datetime`) - to_days(curdate())) AS `dias_remanescente`,
+			`patient_identifier`.`identifier` AS `nid`,
+			`person_attribute`.`value` AS `telemovel`
+			from ((((((((`encounter` join `encounter_type`
+			on((`encounter`.`encounter_type` = `encounter_type`.`encounter_type_id`)))
+			join `patient` on((`encounter`.`patient_id` = `patient`.`patient_id`)))
+			join `patient_identifier` on((`patient_identifier`.`patient_id` = `patient`.`patient_id`)))
+			join `person` on((`patient`.`patient_id` = `person`.`person_id`)))
+			join `person_attribute` on((`person_attribute`.`person_id` = `person`.`person_id`)))
+			join `person_attribute_type` on((`person_attribute`.`person_attribute_type_id` = `person_attribute_type`.`person_attribute_type_id`)))
+			join `obs` on((`obs`.`encounter_id` = `encounter`.`encounter_id`)))
+			join `concept` on((`obs`.`concept_id` = `concept`.`concept_id`)))
+			where ((`encounter_type`.`encounter_type_id` = 18) and (`person_attribute_type`.`person_attribute_type_id` = 9) and (`concept`.`concept_id` = 5096) and (to_days(`obs`.`value_datetime`) - to_days(curdate()))>0);
+			-->
+
+
+			CREATE OR REPLACE VIEW `notificacao_fila` AS
+			select (min(to_days(`obs`.`value_datetime`) - to_days(curdate()))) AS `dias_remanescente`,
+			`patient_identifier`.`identifier` AS `nid`,
+			`person_attribute`.`value` AS `telemovel`,
+			`patient`.`patient_id` AS `identificador`
+			from ((((((((`encounter` join `encounter_type`
+			on((`encounter`.`encounter_type` = `encounter_type`.`encounter_type_id`)))
+			join `patient` on((`encounter`.`patient_id` = `patient`.`patient_id`)))
+			join `patient_identifier` on((`patient_identifier`.`patient_id` = `patient`.`patient_id`)))
+			join `person` on((`patient`.`patient_id` = `person`.`person_id`)))
+			join `person_attribute` on((`person_attribute`.`person_id` = `person`.`person_id`)))
+			join `person_attribute_type` on((`person_attribute`.`person_attribute_type_id` = `person_attribute_type`.`person_attribute_type_id`)))
+			join `obs` on((`obs`.`encounter_id` = `encounter`.`encounter_id`)))
+			join `concept` on((`obs`.`concept_id` = `concept`.`concept_id`)))
+			where ((`encounter_type`.`encounter_type_id` = 18) and (`person_attribute_type`.`person_attribute_type_id` = 9) and (`concept`.`concept_id` = 5096) and (to_days(`obs`.`value_datetime`) - to_days(curdate()))>0 and `person_attribute`.`value` is not null and not `person_attribute`.`value`='' )
+			group by `patient_identifier`.`identifier`;
+
+		</sql>
 	</diff>
- -->
-	
 </sqldiff>
