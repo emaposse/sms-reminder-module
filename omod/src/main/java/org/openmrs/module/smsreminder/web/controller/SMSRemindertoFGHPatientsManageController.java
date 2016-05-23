@@ -15,22 +15,75 @@ package org.openmrs.module.smsreminder.web.controller;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.GlobalProperty;
+import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.smsreminder.SmsReminderUtils;
+import org.openmrs.module.smsreminder.api.SmsReminderService;
+import org.openmrs.module.smsreminder.modelo.Device;
+import org.openmrs.module.smsreminder.modelo.Message;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
+
+import java.sql.Time;
+import java.util.Date;
+import java.util.List;
 
 /**
  * The main controller.
  */
 @Controller
-public class  SMSRemindertoFGHPatientsManageController {
-	
-	protected final Log log = LogFactory.getLog(getClass());
-	
-	@RequestMapping(value = "/module/smsreminder/manage", method = RequestMethod.GET)
-	public void manage(ModelMap model) {
-		model.addAttribute("user", Context.getAuthenticatedUser());
-	}
+public class SMSRemindertoFGHPatientsManageController {
+
+    protected final Log log = LogFactory.getLog(getClass());
+
+    @RequestMapping(value = "/module/smsreminder/manage_port", method = RequestMethod.GET)
+    public ModelAndView currentPort() {
+        ModelAndView modelAndView = new ModelAndView();
+        AdministrationService administrationService= Context.getAdministrationService();
+        GlobalProperty gp= administrationService.getGlobalPropertyObject("smsreminder.port");
+        String port=gp.getPropertyValue();
+        if(port.equals(null) || port.equals("")){
+            modelAndView.addObject("openmrs_msg","manage_port.not.set");
+        }
+
+
+        modelAndView.addObject("port", port);
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/module/smsreminder/manage_message", method = RequestMethod.GET)
+    public ModelAndView currentMessage() {
+        ModelAndView modelAndView = new ModelAndView();
+        AdministrationService administrationService= Context.getAdministrationService();
+        GlobalProperty gp= administrationService.getGlobalPropertyObject("smsreminder.message");
+        String message=gp.getPropertyValue();
+        if(message.equals(null) || message.equals("")){
+            modelAndView.addObject("openmrs_msg","manage_message.not.set");
+        }
+
+
+        modelAndView.addObject("message", message);
+        return modelAndView;
+    }
+
+
+
+    @RequestMapping(value = "/module/smsreminder/manage_smscenter", method = RequestMethod.GET)
+    public ModelAndView currentSmsCenter() {
+        ModelAndView modelAndView = new ModelAndView();
+        AdministrationService administrationService= Context.getAdministrationService();
+        GlobalProperty gp= administrationService.getGlobalPropertyObject("smsreminder.smscenter");
+        String smscenter=gp.getPropertyValue();
+        if(smscenter.equals(null) || smscenter.equals("")) {
+            modelAndView.addObject("openmrs_msg", "manage_smscenter.not.set");
+
+        }
+            modelAndView.addObject("smscenter", smscenter);
+            return modelAndView;
+        }
+
 }

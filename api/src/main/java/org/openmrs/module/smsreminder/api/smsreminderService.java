@@ -13,8 +13,17 @@
  */
 package org.openmrs.module.smsreminder.api;
 
+import org.openmrs.Patient;
+import org.openmrs.annotation.Authorized;
+import org.openmrs.api.APIException;
 import org.openmrs.api.OpenmrsService;
+import org.openmrs.module.smsreminder.modelo.Message;
+import org.openmrs.module.smsreminder.modelo.NotificationPatient;
+import org.openmrs.module.smsreminder.modelo.Sent;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * This service exposes module's core functionality. It is a Spring managed bean which is configured in moduleApplicationContext.xml.
@@ -27,10 +36,54 @@ import org.springframework.transaction.annotation.Transactional;
  * @see org.openmrs.api.context.Context
  */
 @Transactional
-public interface smsreminderService extends OpenmrsService {
-     
+public interface SmsReminderService extends OpenmrsService {
+
 	/*
 	 * Add service methods here
 	 * 
 	 */
+
+	@Authorized({"Manage sent"})
+	public Sent saveSent(Sent sent)	;
+	@Transactional
+	@Authorized({"view Sent"})
+	public List<Sent> getAllSent()throws APIException;
+	@Transactional
+	@Authorized({"view Sent"})
+	public Sent getSentById(Integer id)throws APIException;
+	@Transactional
+	@Authorized({"view Sent"})
+	public List<Sent> getSentByCellNumber(String cellNumber)throws APIException;
+	@Authorized({"view Sent"})
+	public List<Sent> getSentByAlertDate(Date alertDate)throws APIException;
+	@Transactional
+	@Authorized({"view Sent"})
+	public List<Sent> getSentByMessage(String message)throws APIException;
+	@Transactional
+	@Authorized({"view Sent"})
+	public List<Sent> getSentByPatient(Patient patient)throws APIException;
+	@Authorized({"Manage Messages"})
+	public Message saveMessage(Message message);
+	@Transactional
+	@Authorized({"view Messages"})
+	public Message getMessageById(Integer id) throws APIException;
+	@Transactional
+	@Authorized({"view Messages"})
+	public List<Message> getMessageByType(String type)throws APIException;
+	@Transactional
+	@Authorized({"view Messages"})
+	public  List<Message> getMessageByAction(String action)throws APIException;
+	@Transactional
+	@Authorized({"view Messages"})
+	public  List<Message> getMessageByMessage(String messageDescription)throws APIException;
+	@Transactional
+	@Authorized({"view Messages"})
+	public List<Message> getAllMessage() throws APIException;
+	@Transactional
+	@Authorized({"view NotificationPatient"})
+	public List<NotificationPatient> getNotificationPatientList() throws APIException;
+	@Transactional
+	@Authorized({"view NotificationPatient"})
+	public List<NotificationPatient> getNotificationPatientByDiasRemanescente(Integer days)throws APIException;
+
 }

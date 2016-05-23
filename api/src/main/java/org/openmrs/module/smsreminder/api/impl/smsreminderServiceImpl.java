@@ -13,32 +13,100 @@
  */
 package org.openmrs.module.smsreminder.api.impl;
 
-import org.openmrs.api.impl.BaseOpenmrsService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.module.smsreminder.api.smsreminderService;
-import org.openmrs.module.smsreminder.api.db.smsreminderDAO;
+import org.openmrs.Patient;
+import org.openmrs.annotation.Authorized;
+import org.openmrs.api.APIException;
+import org.openmrs.api.impl.BaseOpenmrsService;
+import org.openmrs.module.smsreminder.api.SmsReminderService;
+import org.openmrs.module.smsreminder.api.db.SmsReminderDAO;
+import org.openmrs.module.smsreminder.modelo.*;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Date;
+import java.util.List;
 
 /**
- * It is a default implementation of {@link smsreminderService}.
+ * It is a default implementation of {@link SmsReminderService}.
  */
-public class smsreminderServiceImpl extends BaseOpenmrsService implements smsreminderService {
-	
-	protected final Log log = LogFactory.getLog(this.getClass());
-	
-	private smsreminderDAO dao;
-	
-	/**
-     * @param dao the dao to set
-     */
-    public void setDao(smsreminderDAO dao) {
-	    this.dao = dao;
-    }
-    
+public class SmsReminderServiceImpl extends BaseOpenmrsService implements SmsReminderService {
+
+    protected final Log log = LogFactory.getLog(this.getClass());
+
+    private SmsReminderDAO dao;
+
     /**
      * @return the dao
      */
-    public smsreminderDAO getDao() {
-	    return dao;
+    public SmsReminderDAO getDao() {
+        return dao;
     }
+
+    /**
+     * @param dao the dao to set
+     */
+    public void setDao(SmsReminderDAO dao) {
+        this.dao = dao;
+    }
+
+//service for Sent
+    public Sent saveSent(Sent sent) {
+        return this.getDao().saveSent(sent);
+    }
+
+    public List<Sent> getAllSent()throws APIException{
+      return this.getDao().getAllSent();
+    }
+
+    public Sent getSentById(Integer id)throws APIException{
+        return this.getDao().getSentById(id);
+    }
+
+    public List<Sent> getSentByCellNumber(String cellNumber)throws APIException{
+        return this.getDao().getSentByCellNumber(cellNumber);
+    }
+
+   public List<Sent> getSentByAlertDate(Date alertDate)throws APIException{
+        return this.getDao().getSentByAlertDate(alertDate);
+    }
+
+    public List<Sent> getSentByMessage(String message)throws APIException{
+        return this.getDao().getSentByMessage(message);
+    }
+    public List<Sent> getSentByPatient(Patient patient)throws APIException{
+        return this.getDao().getSentByPatient(patient);
+    }
+//Service for Message
+    public Message saveMessage(Message message) {
+        return this.getDao().saveMessage(message);
+    }
+    public Message getMessageById(Integer id) throws APIException {
+        return this.getDao().getMessageById(id);
+    }
+
+    public List<Message> getAllMessage() throws APIException {
+        return this.getDao().getAllMessage();
+    }
+
+    public List<Message> getMessageByType(String type)throws APIException{
+        return  this.getDao().getMessageByType(type);
+    }
+
+    public  List<Message> getMessageByAction(String action)throws APIException{
+        return this.getDao().getMessageByAction(action);
+    }
+
+    public  List<Message> getMessageByMessage(String messageDescription)throws APIException{
+        return  this.getDao().getMessageByMessage(messageDescription);
+    }
+
+    public List<NotificationPatient> getNotificationPatientList() throws APIException{
+        return this.getDao().getNotificationPatientList();
+    }
+
+    public List<NotificationPatient> getNotificationPatientByDiasRemanescente(Integer days)throws APIException{
+        return  this.getDao().getNotificationPatientByDiasRemanescente(days);
+    }
+
 }
