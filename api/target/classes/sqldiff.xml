@@ -88,30 +88,43 @@
 			group by `paciente_inicio_tarv`.`patient_id`;
 
 			<!--Pacientes que concordaram contacto-->
-
 			CREATE OR REPLACE VIEW `pacientes_concordaram_contacto` AS
 			select `patient`.`patient_id` AS `patient_id`
-			from ((((`obs`
-			join `encounter` on((`obs`.`encounter_id` = `encounter`.`encounter_id`)))
-			join `concept` on((`obs`.`concept_id` = `concept`.`concept_id`)))
-			join `patient` on((`encounter`.`patient_id` = `patient`.`patient_id`)))
-			join `patient_identifier` on((`patient_identifier`.`patient_id` = `patient`.`patient_id`)))
-			where ((`obs`.`concept_id` = 6306)
-			and (`encounter`.`encounter_type` = 34)
-			and (`obs`.`value_coded` = 1065))
+			from `obs`
+			join `encounter` on`obs`.`encounter_id` = `encounter`.`encounter_id`
+			join `patient` on`encounter`.`patient_id` = `patient`.`patient_id`
+			where `obs`.`concept_id` = 6306
+			and `encounter`.`encounter_type` = 34
+			and `encounter`.`voided`=0
+			and `patient`.`voided`=0
+			and `obs`.`value_coded` = 1065
 			group by `patient`.`patient_id`;
 
 			<!-- Pacientes indicam o celular como meio de contacto-->
 			CREATE OR REPLACE VIEW `pacientes_contactados_celular` AS
 			select `patient`.`patient_id` AS `patient_id`
-			from ((((`obs`
-			join `encounter` on((`obs`.`encounter_id` = `encounter`.`encounter_id`)))
-			join `concept` on((`obs`.`concept_id` = `concept`.`concept_id`)))
-			join `patient` on((`encounter`.`patient_id` = `patient`.`patient_id`)))
-			join `patient_identifier` on((`patient_identifier`.`patient_id` = `patient`.`patient_id`)))
-			where ((`obs`.`concept_id` = 6309)
-			and (`encounter`.`encounter_type` = 34)
-			and (`obs`.`value_coded` = 6307))
+			from `obs`
+			join `encounter` on`obs`.`encounter_id` = `encounter`.`encounter_id`
+			join `patient` on`encounter`.`patient_id` = `patient`.`patient_id`
+			where `obs`.`concept_id` = 6309
+			and `encounter`.`encounter_type` = 34
+			and `encounter`.`voided`=0
+			and `patient`.`voided`=0
+			and `obs`.`value_coded` = 6307
+			group by `patient`.`patient_id`;
+
+			<!--Ulitima APSS-Seguimento que nao concorda or não quer receber sms -->
+			CREATE OR REPLACE VIEW `max_apss_seguimento` AS
+			select `patient`.`patient_id` AS `patient_id`,
+			max(`encounter`.`encounter_datetime`) AS `encounter_datetime`
+			from `obs`
+			join `encounter` on`obs`.`encounter_id` = `encounter`.`encounter_id`
+			join `patient` on`encounter`.`patient_id` = `patient`.`patient_id`
+			where  `encounter`.`encounter_type` = 35
+			and `encounter`.`voided`=0
+			and `patient`.`voided`=0
+			and ((`obs`.`concept_id`=6306 and (`obs`.`value_coded`=1066 or `obs`.`value_coded`=null))
+			or(`obs`.`concept_id`=6309 and (`obs`.`value_coded`=2071 or `obs`.`value_coded`=null)))
 			group by `patient`.`patient_id`;
 
 			<!--ULTIMA  FILA -->
@@ -180,7 +193,9 @@
 			`paciente_com_celular`.`proximo_visita` AS `proxima_visita`,
 			`paciente_com_celular`.`dias_remanescente` AS `dias_remanescente`
 			from (`paciente_com_celular`
-			join `novos_inscritos_permite_contacto` on((`paciente_com_celular`.`patient_id` = `novos_inscritos_permite_contacto`.`patient_id`)));
+			join `novos_inscritos_permite_contacto` on((`paciente_com_celular`.`patient_id` = `novos_inscritos_permite_contacto`.`patient_id`)))
+			where `paciente_com_celular`.`patient_id` not in (select `max_apss_seguimento`.`patient_id`
+			from `max_apss_seguimento`);
 
 			<!--INSERT NAS TABELAS PARA INICIALIZAÇÃO DOS DADOS -->
 
