@@ -15,7 +15,6 @@
 	<require_version>${openMRSVersion}</require_version>
 	<!-- / Module Properties -->
 
-	
 	<!-- Module Activator -->
 	<activator>${project.parent.groupId}.${project.parent.artifactId}.SMSRemindertoFGHPatientsActivator</activator>
 	
@@ -28,9 +27,8 @@
 	
 	<!-- Maps hibernate file's, if present -->
 	<mappingFiles>
-				
-		smsreminder.hbm.xml
-				
+		sent.hbm.xml
+		notificationpatient.hbm.xml
 	</mappingFiles>
 
 	<!-- Internationalization -->
@@ -47,7 +45,10 @@
 		<lang>es</lang>
 		<file>messages_es.properties</file>
 	</messages>
+	<messages>
+		<lang>pt</lang>
+		<file>messages_pt.properties</file>b
+	</messages>
 	<!-- /Internationalization -->
-
 </module>
 
