@@ -1,16 +1,14 @@
 package org.openmrs.module.smsreminder.utils;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.GlobalProperty;
-import org.openmrs.Patient;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.smsreminder.SmsReminderUtils;
 import org.openmrs.module.smsreminder.api.SmsReminderService;
-import org.openmrs.module.smsreminder.modelo.Message;
 import org.openmrs.module.smsreminder.modelo.NotificationPatient;
-import org.openmrs.module.smsreminder.modelo.Sent;
 
 import java.util.ArrayList;
 import java.util.List;

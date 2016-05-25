@@ -3,10 +3,6 @@ package org.openmrs.module.smsreminder.web.controller;
 import org.openmrs.GlobalProperty;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.smsreminder.SmsReminderUtils;
-import org.openmrs.module.smsreminder.api.SmsReminderService;
-import org.openmrs.module.smsreminder.modelo.Device;
-import org.openmrs.module.smsreminder.modelo.Message;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,7 +11,6 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 /**
  * Created by Nelson.Mahumane on 07-06-2015.

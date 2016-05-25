@@ -38,13 +38,6 @@ public interface SmsReminderDAO {
 	public List<Sent> getSentByAlertDate(Date alertDate)throws DAOException;
 	public List<Sent> getSentByMessage(String message)throws DAOException;
 	public List<Sent> getSentByPatient(Patient patient)throws DAOException;
-	public Message saveMessage(Message message);
-	public  void deleteMessage(Message message)throws DAOException;
-	public Message getMessageById(Integer id)throws DAOException;
-	public List<Message> getMessageByType(String type)throws DAOException;
-	public  List<Message> getMessageByAction(String action)throws DAOException;
-	public  List<Message> getMessageByMessage(String messageDescription)throws DAOException;
-	public  List<Message> getAllMessage()throws DAOException;
 	public List<NotificationPatient> getNotificationPatientList()throws DAOException;
 	public List<NotificationPatient> getNotificationPatientByDiasRemanescente(Integer days)throws DAOException;
 }

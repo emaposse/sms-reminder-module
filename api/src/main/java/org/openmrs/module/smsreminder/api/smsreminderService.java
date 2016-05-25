@@ -17,7 +17,6 @@ import org.openmrs.Patient;
 import org.openmrs.annotation.Authorized;
 import org.openmrs.api.APIException;
 import org.openmrs.api.OpenmrsService;
-import org.openmrs.module.smsreminder.modelo.Message;
 import org.openmrs.module.smsreminder.modelo.NotificationPatient;
 import org.openmrs.module.smsreminder.modelo.Sent;
 import org.springframework.transaction.annotation.Transactional;
@@ -62,23 +61,6 @@ public interface SmsReminderService extends OpenmrsService {
 	@Transactional
 	@Authorized({"view Sent"})
 	public List<Sent> getSentByPatient(Patient patient)throws APIException;
-	@Authorized({"Manage Messages"})
-	public Message saveMessage(Message message);
-	@Transactional
-	@Authorized({"view Messages"})
-	public Message getMessageById(Integer id) throws APIException;
-	@Transactional
-	@Authorized({"view Messages"})
-	public List<Message> getMessageByType(String type)throws APIException;
-	@Transactional
-	@Authorized({"view Messages"})
-	public  List<Message> getMessageByAction(String action)throws APIException;
-	@Transactional
-	@Authorized({"view Messages"})
-	public  List<Message> getMessageByMessage(String messageDescription)throws APIException;
-	@Transactional
-	@Authorized({"view Messages"})
-	public List<Message> getAllMessage() throws APIException;
 	@Transactional
 	@Authorized({"view NotificationPatient"})
 	public List<NotificationPatient> getNotificationPatientList() throws APIException;

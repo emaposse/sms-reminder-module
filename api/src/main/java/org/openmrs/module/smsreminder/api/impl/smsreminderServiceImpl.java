@@ -16,13 +16,12 @@ package org.openmrs.module.smsreminder.api.impl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Patient;
-import org.openmrs.annotation.Authorized;
 import org.openmrs.api.APIException;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.smsreminder.api.SmsReminderService;
 import org.openmrs.module.smsreminder.api.db.SmsReminderDAO;
-import org.openmrs.module.smsreminder.modelo.*;
-import org.springframework.transaction.annotation.Transactional;
+import org.openmrs.module.smsreminder.modelo.NotificationPatient;
+import org.openmrs.module.smsreminder.modelo.Sent;
 
 import java.util.Date;
 import java.util.List;
@@ -77,29 +76,7 @@ public class SmsReminderServiceImpl extends BaseOpenmrsService implements SmsRem
     public List<Sent> getSentByPatient(Patient patient)throws APIException{
         return this.getDao().getSentByPatient(patient);
     }
-//Service for Message
-    public Message saveMessage(Message message) {
-        return this.getDao().saveMessage(message);
-    }
-    public Message getMessageById(Integer id) throws APIException {
-        return this.getDao().getMessageById(id);
-    }
 
-    public List<Message> getAllMessage() throws APIException {
-        return this.getDao().getAllMessage();
-    }
-
-    public List<Message> getMessageByType(String type)throws APIException{
-        return  this.getDao().getMessageByType(type);
-    }
-
-    public  List<Message> getMessageByAction(String action)throws APIException{
-        return this.getDao().getMessageByAction(action);
-    }
-
-    public  List<Message> getMessageByMessage(String messageDescription)throws APIException{
-        return  this.getDao().getMessageByMessage(messageDescription);
-    }
 
     public List<NotificationPatient> getNotificationPatientList() throws APIException{
         return this.getDao().getNotificationPatientList();

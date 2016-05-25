@@ -27,7 +27,6 @@
 	
 	<!-- Maps hibernate file's, if present -->
 	<mappingFiles>
-		message.hbm.xml
 		sent.hbm.xml
 		notificationpatient.hbm.xml
 	</mappingFiles>

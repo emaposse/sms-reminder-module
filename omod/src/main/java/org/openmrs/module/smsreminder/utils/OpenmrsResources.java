@@ -6,7 +6,6 @@ import org.openmrs.api.context.Context;
 import org.openmrs.util.OpenmrsConstants;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 

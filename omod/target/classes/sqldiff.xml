@@ -19,17 +19,6 @@
 		<description>Sql para criação de tabelas do modulo sms remider</description>
 		<sql>
 			DROP TABLE IF EXISTS sent;
-			DROP TABLE IF EXISTS message;
-			CREATE TABLE `message` (
-			`message_id` int(15) NOT NULL AUTO_INCREMENT,
-			`messageDescription` text CHARACTER SET latin1,
-			`type` varchar(20) NOT NULL,
-			`action` varchar(20) NOT NULL,
-			`days` int(11) DEFAULT NULL,
-			`created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-			PRIMARY KEY (`message_id`)
-			) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
-
 			CREATE TABLE `sent` (
 			`sent_id` int(15) NOT NULL AUTO_INCREMENT,
 			`cell_number` varchar(20) NOT NULL,
@@ -194,10 +183,7 @@
 			join `novos_inscritos_permite_contacto` on((`paciente_com_celular`.`patient_id` = `novos_inscritos_permite_contacto`.`patient_id`)));
 
 			<!--INSERT NAS TABELAS PARA INICIALIZAÇÃO DOS DADOS -->
-			INSERT INTO message(message_id,messageDescription,type,action,days) VALUES (1,'','CONSULTA','PROACTIVA',7);
-			INSERT INTO message(message_id,messageDescription,type,action,days) VALUES (2,'','TARV','PROACTIVA',7);
-			INSERT INTO message(message_id,messageDescription,type,action,days) VALUES (3,'','CONSULTA','REACTIVA',7);
-			INSERT INTO message(message_id,messageDescription,type,action,days) VALUES (4,'','TARV','REACTIVA',7);
+
 
 			INSERT INTO privilege(privilege,description,uuid) VALUES ('Edit Message','Editar Mensagem que é enviada para
 			os pacientes no Modulo SMS Reminder', uuid());
@@ -226,6 +212,13 @@
 			INSERT INTO global_property
 			(property, property_value, description, uuid, datatype, datatype_config, preferred_handler, handler_config)
 			VALUES('smsreminder.remaindays','15,7,2','Specifies the days remain to next visit',UUID(),NULL,NULL,NULL,NULL);
+
+			insert into scheduler_task_config
+			(name,description,schedulable_class,start_time,start_time_pattern,repeat_interval,start_on_startup,
+			started,created_by,date_created,changed_by,date_changed,uuid,last_execution_time)
+			value('SmsReminderTask','Enviar sms a paciente automaticamente mediante aos requisitos especificos',
+			'org.openmrs.module.smsreminder.scheduler.SendSmsReminderTask','2016-05-24 09:00:00','MM/dd/yyyy HH:mm:ss',
+			86400,1,0,1,current_date,null,null,uuid(), null);
 
         </sql>
 	</diff>

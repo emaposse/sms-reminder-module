@@ -2,31 +2,26 @@ package org.openmrs.module.smsreminder.web.controller;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.*;
-import org.openmrs.api.*;
+import org.openmrs.GlobalProperty;
+import org.openmrs.api.AdministrationService;
+import org.openmrs.api.LocationService;
+import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.smsreminder.SmsReminderUtils;
 import org.openmrs.module.smsreminder.api.SmsReminderService;
-import org.openmrs.module.smsreminder.modelo.Device;
-import org.openmrs.module.smsreminder.modelo.Message;
 import org.openmrs.module.smsreminder.modelo.NotificationPatient;
 import org.openmrs.module.smsreminder.modelo.Sent;
-import org.openmrs.module.smsreminder.utils.DatasUtil;
-import org.openmrs.module.smsreminder.utils.OpenmrsResources;
 import org.openmrs.module.smsreminder.utils.SendMessage;
 import org.openmrs.module.smsreminder.utils.Validator;
-import org.openmrs.util.OpenmrsConstants;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
+
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 /**

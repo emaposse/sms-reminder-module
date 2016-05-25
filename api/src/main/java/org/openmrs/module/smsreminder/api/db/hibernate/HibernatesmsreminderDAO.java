@@ -22,7 +22,6 @@ import org.hibernate.criterion.Restrictions;
 import org.openmrs.Patient;
 import org.openmrs.api.db.DAOException;
 import org.openmrs.module.smsreminder.api.db.SmsReminderDAO;
-import org.openmrs.module.smsreminder.modelo.Message;
 import org.openmrs.module.smsreminder.modelo.NotificationPatient;
 import org.openmrs.module.smsreminder.modelo.Sent;
 import org.openmrs.module.smsreminder.utils.DatasUtil;
@@ -90,36 +89,6 @@ public class HibernateSmsReminderDAO implements SmsReminderDAO {
 	public List<Sent> getSentByPatient(Patient patient)throws DAOException{
 		Criteria c = this.sessionFactory.getCurrentSession().createCriteria(Sent.class);
 		c.add(Restrictions.eq("patient",patient));
-		return c.list();
-	}
-
-	public Message saveMessage(Message message) {
-		this.sessionFactory.getCurrentSession().saveOrUpdate(message);
-		return message;
-	}
-	public void deleteMessage(Message message) throws DAOException {
-		this.sessionFactory.getCurrentSession().delete(message);
-
-	}
-	public Message getMessageById(Integer id) throws DAOException {
-		return (Message) this.sessionFactory.getCurrentSession().get(Message.class, id);
-	}
-
-	public List<Message> getAllMessage() throws DAOException {
-		Criteria c = this.sessionFactory.getCurrentSession().createCriteria(Message.class);
-		return c.list();
-	}
-	public List<Message> getMessageByType(String type)throws DAOException{
-		Criteria c = this.sessionFactory.getCurrentSession().createCriteria(Sent.class, type);
-		return c.list();
-	}
-
-	public  List<Message> getMessageByAction(String action)throws DAOException{
-		Criteria c = this.sessionFactory.getCurrentSession().createCriteria(Sent.class, action);
-		return c.list();
-	}
-	public  List<Message> getMessageByMessage(String messageDescription)throws DAOException{
-		Criteria c = this.sessionFactory.getCurrentSession().createCriteria(Sent.class, messageDescription);
 		return c.list();
 	}
 
