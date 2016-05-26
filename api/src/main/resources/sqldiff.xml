@@ -124,7 +124,7 @@
 			and `encounter`.`voided`=0
 			and `patient`.`voided`=0
 			and ((`obs`.`concept_id`=6306 and (`obs`.`value_coded`=1066 or `obs`.`value_coded`=null))
-			or(`obs`.`concept_id`=6309 and (`obs`.`value_coded`=2071 or `obs`.`value_coded`=null)))
+			or(`obs`.`concept_id`=6309 and (not (`obs`.`value_coded`=6307) or `obs`.`value_coded`=null)))
 			group by `patient`.`patient_id`;
 
 			<!--ULTIMA  FILA -->
