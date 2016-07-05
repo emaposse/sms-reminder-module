@@ -26,6 +26,7 @@ public class DatasUtil {
     private static final String FORMATO_HORA = "HH:mm:ss";
     private static final String FORMATO_MES = "MM";
     private static final String FORMATO_ANO = "yyyy";
+    private static final String FORMATAR_DATA_PT = "dd-MM-yyyy";
 
     public static Date criarData() {
         Calendar calendario = new GregorianCalendar();
@@ -37,6 +38,10 @@ public class DatasUtil {
         return formatoData.format(data);
     }
 
+    public static String formatarDataPt(Date data) {
+        DateFormat formatoData = new SimpleDateFormat(FORMATAR_DATA_PT);
+        return formatoData.format(data);
+    }
     public static String _formatarData(Date data) {
         DateFormat formatoData = new SimpleDateFormat(_FORMATO_DATA);
         return formatoData.format(data);

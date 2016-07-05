@@ -1,10 +1,5 @@
 package org.openmrs.module.smsreminder.utils;
 
-import org.openmrs.Obs;
-import org.openmrs.api.EncounterService;
-import org.openmrs.api.ObsService;
-import org.openmrs.api.context.Context;
-
 /*
  * 
  * @author : Nelson Mahumane
@@ -60,15 +55,13 @@ public class SMSClient implements Runnable{
       //in SYNCHRONOUS mode wait for return : 0 for OK, -2 for timeout, -1 for other errors
       if (mode==SYNCHRONOUS) {
           while (aSender.status == -1){
-            myThread.sleep (5000);
+            myThread.sleep (1000);
           }
       }
       if (aSender.status == 0) messageNo=aSender.messageNo ;
 
     }catch (Exception e){
-
-        e.printStackTrace();
-
+      e.printStackTrace();
     }
 
     this.status=aSender.status ;

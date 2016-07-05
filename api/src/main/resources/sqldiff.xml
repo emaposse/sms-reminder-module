@@ -18,13 +18,13 @@
 		<date>10 jun 2015</date>
 		<description>Sql para criação de tabelas do modulo sms remider</description>
 		<sql>
-			DROP TABLE IF EXISTS sent;
-			CREATE TABLE `sent` (
+			DROP TABLE IF EXISTS smsreminder_sent;
+			CREATE TABLE `smsreminder_sent` (
 			`sent_id` int(15) NOT NULL AUTO_INCREMENT,
 			`cell_number` varchar(20) NOT NULL,
 			`alert_date` date NOT NULL,
 			`message` varchar(150) NOT NULL,
-			`remain_days` smallint(5) NOT NULL,
+			`remain_days` int(7) NOT NULL,
 			`patient_id` int(15) NOT NULL,
 			`created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 			PRIMARY KEY (`sent_id`),
@@ -34,7 +34,7 @@
 
 			<!-- CRIAÇÃO DE VIEWS PARA AUXILIAR NO FILTRO DE PACIENTES A NOTIFICAR-->
 
-           <!-- Pacientes que iniciaram tarv em varias fontes de dados com datas diferentes-->
+			<!-- Pacientes que iniciaram tarv em varias fontes de dados com datas diferentes-->
 
 			CREATE OR REPLACE VIEW `paciente_inicio_tarv` AS
 			select `p`.`patient_id` AS `patient_id`,min(`e`.`encounter_datetime`) AS `data_inicio`
@@ -87,22 +87,10 @@
 			from `paciente_inicio_tarv`
 			group by `paciente_inicio_tarv`.`patient_id`;
 
-			<!--Pacientes que concordaram contacto-->
-			CREATE OR REPLACE VIEW `pacientes_concordaram_contacto` AS
-			select `patient`.`patient_id` AS `patient_id`
-			from `obs`
-			join `encounter` on`obs`.`encounter_id` = `encounter`.`encounter_id`
-			join `patient` on`encounter`.`patient_id` = `patient`.`patient_id`
-			where `obs`.`concept_id` = 6306
-			and `encounter`.`encounter_type` = 34
-			and `encounter`.`voided`=0
-			and `patient`.`voided`=0
-			and `obs`.`value_coded` = 1065
-			group by `patient`.`patient_id`;
-
-			<!-- Pacientes indicam o celular como meio de contacto-->
-			CREATE OR REPLACE VIEW `pacientes_contactados_celular` AS
-			select `patient`.`patient_id` AS `patient_id`
+			<!--Pacientes que concordaram em ser contactados e indicaram o celular como meio de contacto -->
+			CREATE OR REPLACE VIEW `paciente_permitem_contacto` AS
+			select `patient`.`patient_id` AS `patient_id`,
+			`encounter`.`encounter_datetime` AS `encounter_datetime`
 			from `obs`
 			join `encounter` on`obs`.`encounter_id` = `encounter`.`encounter_id`
 			join `patient` on`encounter`.`patient_id` = `patient`.`patient_id`
@@ -111,10 +99,8 @@
 			and `encounter`.`voided`=0
 			and `patient`.`voided`=0
 			and `obs`.`value_coded` = 6307
-			group by `patient`.`patient_id`;
-
-			<!--Ulitima APSS-Seguimento que nao concorda or não quer receber sms -->
-			CREATE OR REPLACE VIEW `max_apss_seguimento` AS
+			group by `patient`.`patient_id`
+			UNION
 			select `patient`.`patient_id` AS `patient_id`,
 			max(`encounter`.`encounter_datetime`) AS `encounter_datetime`
 			from `obs`
@@ -123,9 +109,15 @@
 			where  `encounter`.`encounter_type` = 35
 			and `encounter`.`voided`=0
 			and `patient`.`voided`=0
-			and ((`obs`.`concept_id`=6306 and (`obs`.`value_coded`=1066 or `obs`.`value_coded`=null))
-			or(`obs`.`concept_id`=6309 and (not (`obs`.`value_coded`=6307) or `obs`.`value_coded`=null)))
+			and `obs`.`concept_id` = 6309
+			and	`obs`.`value_coded` = 6307
 			group by `patient`.`patient_id`;
+
+			<!--PACIENTES QUE SÃO NOVOS INSCRITOS AO TARV A PARTIR DE UMA CERTA DATA E QUE CONSENTE CONTACTO PELO CELULAR-->
+			CREATE OR REPLACE VIEW `novos_inscritos_permite_contacto` AS
+			SELECT `paciente_novos_inscritos_tarv`.`patient_id` AS `patient_id`,`paciente_novos_inscritos_tarv`.`data_inicio` AS `data_inicio`
+			FROM `paciente_novos_inscritos_tarv`
+			JOIN `paciente_permitem_contacto` ON `paciente_permitem_contacto`.`patient_id`=`paciente_novos_inscritos_tarv`.`patient_id`;
 
 			<!--ULTIMA  FILA -->
 			CREATE OR REPLACE VIEW `max_frida` AS
@@ -139,27 +131,14 @@
 			and (`e`.`encounter_type` = 18))
 			group by `p`.`patient_id`;
 
-			<!--Pacientes que concordaram em ser contactados e indicaram o celular como meio de contacto -->
-			CREATE OR REPLACE VIEW `paciente_permitem_contacto` AS
-			select `pacientes_concordaram_contacto`.`patient_id` AS `patient_id`
-			from (`pacientes_concordaram_contacto` join `pacientes_contactados_celular`
-			on((`pacientes_concordaram_contacto`.`patient_id` = `pacientes_contactados_celular`.`patient_id`)));
-
-			<!--PACIENTES QUE SÃO NOVOS INSCRITOS AO TARV A PARTIR DE UMA CERTA DATA E QUE CONSENTE CONTACTO PELO CELULAR-->
-			CREATE OR REPLACE VIEW `novos_inscritos_permite_contacto` AS
-			SELECT `paciente_novos_inscritos_tarv`.`patient_id` AS `patient_id`,`paciente_novos_inscritos_tarv`.`data_inicio` AS `data_inicio`
-			FROM `paciente_novos_inscritos_tarv`
-			JOIN `paciente_permitem_contacto` ON `paciente_permitem_contacto`.`patient_id`=`paciente_novos_inscritos_tarv`.`patient_id`;
-
-
-
 			<!--PACIENTES QUE TEM PROXIMO LEVANTAMENTO QUE TEM CELULAR-->
 			CREATE OR REPLACE VIEW `paciente_com_celular` AS
 			select (to_days(`o`.`value_datetime`) - to_days(curdate())) AS `dias_remanescente`,
 			`o`.`value_datetime` AS `proximo_visita`,
 			`pid`.`identifier` AS `nid`,
 			`pa`.`value` AS `telemovel`,
-			CONCAT(`pn`.`given_name`, ' ',`pn`.`middle_name`,' ',`pn`.`family_name`) AS nome_completo,
+			CONCAT(ifnull(pn.given_name,''),' ',ifnull(pn.middle_name,''),' ',ifnull(pn.family_name,''))  AS nome_completo,
+			`p`.`gender` AS sexo,
 			`max_frida`.`patient_id` AS `patient_id`,
 			`max_frida`.`encounter_type` AS `visita`,
 			`max_frida`.`encounter_datetime` AS `ultima_visita`
@@ -186,6 +165,7 @@
 			`paciente_com_celular`.`patient_id` AS `identificador`,
 			`paciente_com_celular`.`nid` AS `nid`,
 			`paciente_com_celular`.`nome_completo` AS `nome_completo`,
+			`paciente_com_celular`.`sexo` AS `sexo`,
 			`paciente_com_celular`.`telemovel` AS `telemovel`,
 			`paciente_com_celular`.`visita` AS `tipo_visita`,
 			`novos_inscritos_permite_contacto`.`data_inicio` AS `inicio_tarv`,
@@ -193,9 +173,8 @@
 			`paciente_com_celular`.`proximo_visita` AS `proxima_visita`,
 			`paciente_com_celular`.`dias_remanescente` AS `dias_remanescente`
 			from (`paciente_com_celular`
-			join `novos_inscritos_permite_contacto` on((`paciente_com_celular`.`patient_id` = `novos_inscritos_permite_contacto`.`patient_id`)))
-			where `paciente_com_celular`.`patient_id` not in (select `max_apss_seguimento`.`patient_id`
-			from `max_apss_seguimento`);
+			join `novos_inscritos_permite_contacto` on((`paciente_com_celular`.`patient_id` = `novos_inscritos_permite_contacto`.`patient_id`)));
+
 
 			<!--INSERT NAS TABELAS PARA INICIALIZAÇÃO DOS DADOS -->
 
@@ -214,11 +193,11 @@
 
 			INSERT INTO global_property
 			(property, property_value, description, uuid, datatype, datatype_config, preferred_handler, handler_config)
-			VALUES('smsreminder.message','tem um compromisso no dia:','Specifies the SMS center',UUID(),NULL,NULL,NULL,NULL);
+			VALUES('smsreminder.message','tem um encontro','Specifies the SMS center',UUID(),NULL,NULL,NULL,NULL);
 
 			INSERT INTO global_property
 			(property, property_value, description, uuid, datatype, datatype_config, preferred_handler, handler_config)
-			VALUES('smsreminder.us','6','Specifies the location',UUID(),NULL,NULL,NULL,NULL);
+			VALUES('smsreminder.us','11','Specifies the location',UUID(),NULL,NULL,NULL,NULL);
 
 			INSERT INTO global_property
 			(property, property_value, description, uuid, datatype, datatype_config, preferred_handler, handler_config)
@@ -233,7 +212,7 @@
 			started,created_by,date_created,changed_by,date_changed,uuid,last_execution_time)
 			value('SmsReminderTask','Enviar sms a paciente automaticamente mediante aos requisitos especificos',
 			'org.openmrs.module.smsreminder.scheduler.SendSmsReminderTask','2016-05-24 09:00:00','MM/dd/yyyy HH:mm:ss',
-			86400,1,0,1,current_date,null,null,uuid(), null);
+			86400,0,0,1,current_date,null,null,uuid(), null);
 
         </sql>
 	</diff>

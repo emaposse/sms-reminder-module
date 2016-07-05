@@ -22,7 +22,7 @@
 		<property name="proximaVisita" type="java.util.Date" column="proxima_visita" insert="false" />
 		<property name="nid" type="java.lang.String" column="nid" insert="false" />
 		<property name="nome" type="java.lang.String" column="nome_completo" insert="false" />
+		<property name="sexo" type="java.lang.String" column="sexo" insert="false" />
 		<property name="inicioTarv" type="java.util.Date" column="inicio_tarv" insert="false" />
-
 	</class>
 </hibernate-mapping>

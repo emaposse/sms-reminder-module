@@ -14,6 +14,7 @@ public class NotificationPatient extends BaseOpenmrsData implements Serializable
     private String nid;
     private String telemovel;
     private String nome;
+    private String sexo;
     private Integer diasRemanescente;
     private Integer identificador;
     private Integer tipoVisita;
@@ -99,5 +100,13 @@ public class NotificationPatient extends BaseOpenmrsData implements Serializable
 
     public void setInicioTarv(Date inicioTarv) {
         this.inicioTarv = inicioTarv;
+    }
+
+    public String getSexo() {
+        return sexo;
+    }
+
+    public void setSexo(String sexo) {
+        this.sexo = sexo;
     }
 }

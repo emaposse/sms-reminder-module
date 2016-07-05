@@ -16,7 +16,7 @@ public class Sent extends BaseOpenmrsData implements Serializable {
     private Date alertDate;
     private String message;
     private Patient patient;
-    private Byte remainDays;
+    private Integer remainDays;
 
     public Integer getSentId() {
         return sentId;
@@ -56,11 +56,11 @@ public class Sent extends BaseOpenmrsData implements Serializable {
         this.message = message;
     }
 
-    public Byte getRemainDays() {
+    public Integer getRemainDays() {
         return remainDays;
     }
 
-    public void setRemainDays(Byte remainDays) {
+    public void setRemainDays(Integer remainDays) {
         this.remainDays = remainDays;
     }
 

@@ -11,6 +11,7 @@ import org.openmrs.module.smsreminder.SmsReminderUtils;
 import org.openmrs.module.smsreminder.api.SmsReminderService;
 import org.openmrs.module.smsreminder.modelo.NotificationPatient;
 import org.openmrs.module.smsreminder.modelo.Sent;
+import org.openmrs.module.smsreminder.utils.DatasUtil;
 import org.openmrs.module.smsreminder.utils.SendMessage;
 import org.openmrs.module.smsreminder.utils.Validator;
 import org.springframework.stereotype.Controller;
@@ -76,27 +77,27 @@ public class SendMessageController {
         PatientService patientService = Context.getPatientService();
         LocationService locationService=Context.getLocationService();
         if (notificationPatients!=null && !notificationPatients.isEmpty()) {
-            for (NotificationPatient notificationPatient : notificationPatients) {
-                String messagem = "O sr. " + notificationPatient.getNome() + " " + message + " " + notificationPatient.getProximaVisita() + " " + "no " + locationService.getLocation(Integer.valueOf(us)).getName();
+           for (NotificationPatient notificationPatient : notificationPatients) {
+               System.out.println("O sexo: " + notificationPatient.getSexo());
+                String messagem=(notificationPatient.getSexo().equals("M"))?
+                        "O sr: " + notificationPatient.getNome() + " " + message +" " + "no " + locationService.getLocation(Integer.valueOf(us)).getName()+" " +"no dia  "+ DatasUtil.formatarDataPt(notificationPatient.getProximaVisita()):
+                        "A sra: " + notificationPatient.getNome() + " " + message +" " + "no " + locationService.getLocation(Integer.valueOf(us)).getName()+" " +"no dia  "+ DatasUtil.formatarDataPt(notificationPatient.getProximaVisita());
 
+                Sent sent = new Sent();
+                sent.setCellNumber(notificationPatient.getTelemovel());
+                sent.setAlertDate(notificationPatient.getProximaVisita());
+                sent.setMessage(messagem);
+                sent.setRemainDays(notificationPatient.getDiasRemanescente());
+                sent.setPatient(patientService.getPatient(notificationPatient.getIdentificador()));
                 try {
-                    int status = sendMessage.sendMessage(smscenter, port, Validator.cellNumberValidator(notificationPatient.getTelemovel()), messagem);
-                    if (status == 0) {
-                        Sent sent = new Sent();
-                        sent.setCellNumber(notificationPatient.getTelemovel());
-                        sent.setAlertDate(notificationPatient.getProximaVisita());
-                        sent.setMessage(messagem);
-                        sent.setRemainDays(notificationPatient.getDiasRemanescente().byteValue());
-                        sent.setPatient(patientService.getPatient(notificationPatient.getIdentificador()));
+                    int status = sendMessage.sendMessage(smscenter,port, Validator.cellNumberValidator(notificationPatient.getTelemovel()), messagem);
+                    System.out.println("Estado do envio: "+ status);
                         smsReminderService.saveSent(sent);
-                        log.info("SMS enviada para o número: "+notificationPatient.getTelemovel());
-                    }else{log.info("Erro enviando sms para: "+notificationPatient.getTelemovel());}
                 } catch (Exception e) {
-                    this.log.error("Erro enviando sms para: " + e.getMessage());
+                    e.printStackTrace();
                 }
             }
         }
-
         request.getSession().removeAttribute("notificationPatients");
         return new ModelAndView(new RedirectView(request.getContextPath()
                 + "/module/smsreminder/manual_submission.form"));
