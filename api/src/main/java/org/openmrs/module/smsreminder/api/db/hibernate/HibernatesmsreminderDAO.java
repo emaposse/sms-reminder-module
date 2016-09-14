@@ -86,6 +86,12 @@ public class HibernateSmsReminderDAO implements SmsReminderDAO {
 		Criteria c = this.sessionFactory.getCurrentSession().createCriteria(Sent.class,message);
 		return c.list();
 	}
+
+	public List<Sent> getSentByStatus(String status)throws DAOException{
+		Criteria c = this.sessionFactory.getCurrentSession().createCriteria(Sent.class,status);
+		return c.list();
+	}
+
 	public List<Sent> getSentByPatient(Patient patient)throws DAOException{
 		Criteria c = this.sessionFactory.getCurrentSession().createCriteria(Sent.class);
 		c.add(Restrictions.eq("patient",patient));

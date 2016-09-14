@@ -14,6 +14,7 @@
 		<property name="dateCreated" type="java.util.Date" column="created" not-null="true" length="19" />
 		<property name="remainDays" type="java.lang.Integer" column="remain_days" not-null="true" length="5"/>
 		<property name="message" type="java.lang.String" column="message" not-null="true" length="150"/>
+		<property name="status" type="java.lang.String" column="status"  length="20"/>
 		<!-- bi-directional many-to-one association to Patient -->
 		<many-to-one name="patient" class="org.openmrs.Patient" not-null="false" column="patient_id"/>
 	</class>

@@ -37,6 +37,7 @@ public interface SmsReminderDAO {
 	public List<Sent> getSentByCellNumber(String cellNumber)throws DAOException;
 	public List<Sent> getSentByAlertDate(Date alertDate)throws DAOException;
 	public List<Sent> getSentByMessage(String message)throws DAOException;
+	public List<Sent> getSentByStatus(String status)throws DAOException;
 	public List<Sent> getSentByPatient(Patient patient)throws DAOException;
 	public List<NotificationPatient> getNotificationPatientList()throws DAOException;
 	public List<NotificationPatient> getNotificationPatientByDiasRemanescente(Integer days)throws DAOException;

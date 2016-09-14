@@ -12,12 +12,10 @@ import org.openmrs.module.smsreminder.SmsReminderUtils;
 import org.openmrs.module.smsreminder.api.SmsReminderService;
 import org.openmrs.module.smsreminder.modelo.NotificationPatient;
 import org.openmrs.module.smsreminder.modelo.Sent;
-import org.openmrs.module.smsreminder.utils.DatasUtil;
-import org.openmrs.module.smsreminder.utils.SendMessage;
-import org.openmrs.module.smsreminder.utils.SmsReminderResource;
-import org.openmrs.module.smsreminder.utils.Validator;
+import org.openmrs.module.smsreminder.utils.*;
 import org.openmrs.scheduler.tasks.AbstractTask;
 
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -31,7 +29,6 @@ public class SendSmsReminderTask extends AbstractTask {
         Context.openSession();
         log.info("Starting send SMS ... ");
         try {
-            SendMessage sendMessage = new SendMessage();
             AdministrationService administrationService = Context.getAdministrationService();
             List<NotificationPatient> notificationPatients = SmsReminderResource.getAllNotificationPatiens();
             GlobalProperty gpSmscenter = administrationService.getGlobalPropertyObject("smsreminder.smscenter");
@@ -42,25 +39,34 @@ public class SendSmsReminderTask extends AbstractTask {
             String message = gpMessage.getPropertyValue();
             GlobalProperty gpUs = administrationService.getGlobalPropertyObject("smsreminder.us");
             String us = gpUs.getPropertyValue();
-
+            GlobalProperty gpBandRate = administrationService.getGlobalPropertyObject("smsreminder.bandRate");
+            int bandRate = Integer.parseInt(gpBandRate.getPropertyValue());
             SmsReminderService smsReminderService = SmsReminderUtils.getService();
             PatientService patientService = Context.getPatientService();
             LocationService locationService = Context.getLocationService();
+            SMSClient smsClient = new SMSClient(0);
             if (notificationPatients != null && !notificationPatients.isEmpty()) {
-                for (NotificationPatient notificationPatient : notificationPatients) {
-                    String messagem=(notificationPatient.getSexo().equals("M"))?
-                            "O sr: " + notificationPatient.getNome() + " " + message +" " + "no " + locationService.getLocation(Integer.valueOf(us)).getName()+" " +"no dia  "+ DatasUtil.formatarDataPt(notificationPatient.getProximaVisita()):
-                            "A sra: " + notificationPatient.getNome() + " " + message +" " + "no " + locationService.getLocation(Integer.valueOf(us)).getName()+" " +"no dia  "+ DatasUtil.formatarDataPt(notificationPatient.getProximaVisita());
-                    Sent sent = new Sent();
-                    sent.setCellNumber(notificationPatient.getTelemovel());
-                    sent.setAlertDate(notificationPatient.getProximaVisita());
-                    sent.setMessage(messagem);
-                    sent.setRemainDays(notificationPatient.getDiasRemanescente());
-                    sent.setPatient(patientService.getPatient(notificationPatient.getIdentificador()));
+                Iterator<NotificationPatient> it = notificationPatients.iterator();
+                while (it.hasNext()) {
+                    NotificationPatient notificationPatient = it.next();
+                    String messagem = (notificationPatient.getSexo().equals("M")) ?
+                            "O sr: " + notificationPatient.getNome() + " " + message + " " + "no " + locationService.getLocation(Integer.valueOf(us)).getName() + " " + "no dia  " + DatasUtil.formatarDataPt(notificationPatient.getProximaVisita()) :
+                            "A sra: " + notificationPatient.getNome() + " " + message + " " + "no " + locationService.getLocation(Integer.valueOf(us)).getName() + " " + "no dia  " + DatasUtil.formatarDataPt(notificationPatient.getProximaVisita());
 
                     try {
-                        int status = sendMessage.sendMessage(smscenter, port, Validator.cellNumberValidator(notificationPatient.getTelemovel()), messagem);
-                        smsReminderService.saveSent(sent);
+                        synchronized (smsClient) {
+                            smsClient.sendMessage(smscenter, port, bandRate, Validator.cellNumberValidator(notificationPatient.getTelemovel()), messagem);
+                            while (smsClient.status == -1)
+                                smsClient.wait();
+                        }
+                        Sent sent = new Sent();
+                        sent.setCellNumber(notificationPatient.getTelemovel());
+                        sent.setAlertDate(notificationPatient.getProximaVisita());
+                        sent.setMessage(messagem);
+                        sent.setRemainDays(notificationPatient.getDiasRemanescente());
+                        sent.setPatient(patientService.getPatient(notificationPatient.getIdentificador()));
+                        if (smsClient.status == 0)
+                            smsReminderService.saveSent(sent);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

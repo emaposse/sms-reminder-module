@@ -60,6 +60,9 @@ public interface SmsReminderService extends OpenmrsService {
 	public List<Sent> getSentByMessage(String message)throws APIException;
 	@Transactional
 	@Authorized({"view Sent"})
+	public List<Sent> getSentByStatus(String status)throws APIException;
+	@Transactional
+	@Authorized({"view Sent"})
 	public List<Sent> getSentByPatient(Patient patient)throws APIException;
 	@Transactional
 	@Authorized({"view NotificationPatient"})

@@ -73,6 +73,11 @@ public class SmsReminderServiceImpl extends BaseOpenmrsService implements SmsRem
     public List<Sent> getSentByMessage(String message)throws APIException{
         return this.getDao().getSentByMessage(message);
     }
+
+    public List<Sent> getSentByStatus(String status)throws APIException{
+        return this.getDao().getSentByMessage(status);
+    }
+
     public List<Sent> getSentByPatient(Patient patient)throws APIException{
         return this.getDao().getSentByPatient(patient);
     }

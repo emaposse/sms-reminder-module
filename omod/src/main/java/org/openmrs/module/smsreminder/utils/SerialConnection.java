@@ -100,7 +100,7 @@ public class SerialConnection implements SerialPortEventListener,
         // a different application to reliquish the port if the user
         // wants to.
         try {
-            sPort = (SerialPort)portId.open("SMSREMIDER", 300000);
+            sPort = (SerialPort)portId.open("SMSREMIDER",500000);
         } catch (PortInUseException e) {
 
             throw new SerialConnectionException(e.getMessage());

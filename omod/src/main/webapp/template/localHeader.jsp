@@ -29,6 +29,13 @@
             code="smsreminder.manual_submission"/></a>
     </li>
 
+      <li
+        <c:if test='<%= request.getRequestURI().contains("/smslib_manual_submission") %>'>class="active"</c:if>>
+        <a
+                href="${pageContext.request.contextPath}/module/smsreminder/smslib_manual_submission.form"><spring:message
+                code="smsreminder.smslib_manual_submission"/></a>
+        </li>
+
     <!-- Add further links here -->
 </ul>
 <h3>

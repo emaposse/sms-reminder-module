@@ -26,11 +26,12 @@
 			`message` varchar(150) NOT NULL,
 			`remain_days` int(7) NOT NULL,
 			`patient_id` int(15) NOT NULL,
+			`status` varchar(20) DEFAULT NULL,
 			`created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 			PRIMARY KEY (`sent_id`),
 			KEY `patient_pk` (`patient_id`),
 			CONSTRAINT `patient_pk` FOREIGN KEY (`patient_id`) REFERENCES `patient` (`patient_id`)
-			) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 			<!-- CRIAÇÃO DE VIEWS PARA AUXILIAR NO FILTRO DE PACIENTES A NOTIFICAR-->
 
@@ -186,6 +187,13 @@
 			(property, property_value, description, uuid, datatype, datatype_config, preferred_handler, handler_config)
 			VALUES('smsreminder.port','COM17','Specifies the serial port wich will use to send',UUID(),NULL,NULL,NULL,NULL);
 
+			INSERT INTO global_property
+			(property, property_value, description, uuid, datatype, datatype_config, preferred_handler, handler_config)
+			VALUES('smsreminder.bandRate','115200','Specifies the rate of band',UUID(),NULL,NULL,NULL,NULL);
+
+			INSERT INTO global_property
+			(property, property_value, description, uuid, datatype, datatype_config, preferred_handler, handler_config)
+			VALUES('smsreminder.simPin','0000','Specifies the pin code from sim card',UUID(),NULL,NULL,NULL,NULL);
 
 			INSERT INTO global_property
 			(property, property_value, description, uuid, datatype, datatype_config, preferred_handler, handler_config)

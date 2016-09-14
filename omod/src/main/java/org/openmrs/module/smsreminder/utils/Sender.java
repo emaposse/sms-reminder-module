@@ -31,12 +31,12 @@ public class Sender implements Runnable  {
   public int status=-1;
   public long messageNo=-1;
 
-  public Sender(String recipient, String message,String smsc,String porta){
+  public Sender(String recipient, String message,String smsc,String porta,int bandRate){
 
      this.recipient=recipient;
     this.message=message;
       this.csca=smsc;
-      defaultParameters= new SerialParameters(porta,460800,0,0,8,1,0);
+      defaultParameters= new SerialParameters(porta,bandRate,0,0,8,1,0);
   }
   /**
    * connect to the port and start the dialogue thread

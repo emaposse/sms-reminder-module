@@ -15,6 +15,7 @@ public class Sent extends BaseOpenmrsData implements Serializable {
     private  String cellNumber;
     private Date alertDate;
     private String message;
+    private String status;
     private Patient patient;
     private Integer remainDays;
 
@@ -64,6 +65,14 @@ public class Sent extends BaseOpenmrsData implements Serializable {
         this.remainDays = remainDays;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     public Patient getPatient() {
         return patient;
     }
@@ -71,5 +80,16 @@ public class Sent extends BaseOpenmrsData implements Serializable {
         this.patient = patient;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Sent)) return false;
+        if (!super.equals(o)) return false;
+
+        Sent sent = (Sent) o;
+
+        return sentId.equals(sent.sentId);
+
+    }
 
 }
