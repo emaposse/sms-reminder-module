@@ -99,33 +99,24 @@ public class Sender implements Runnable  {
             delay=LONG;
             startTime=(new Date()).getTime();
             break;
-
           case 1:
             delay=STANDARD;
-            
-            mySerial.send("ath0");
-            
+           mySerial.send("ath0");
             startTime=(new Date()).getTime();
             break;
-            
           case 2:
-        	  
-        	  //System.out.println("entrei");
             expectedResult=result.indexOf("OK");
-           // System.out.println("sai");
             //log ("received ok ="+expectedResult);
+              System.out.println("Não condiz:"+result +":"+ expectedResult);
             if (expectedResult>-1){
-            	
               mySerial.send("at+cmgf=1");
-              
               startTime=(new Date()).getTime();
             }else{
                 step=step-1;
-           }
+          }
             break;
           case 3:
             expectedResult=result.indexOf("OK");
-
            // log ("received ok ="+expectedResult);
             if (expectedResult>-1){
               mySerial.send("at+csca=\""+csca+"\"");
@@ -133,7 +124,6 @@ public class Sender implements Runnable  {
             }else{
              step=step-1;
             }
-
             break;
           case 4:
             expectedResult=result.indexOf("OK");

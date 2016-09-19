@@ -22,7 +22,8 @@ import java.util.List;
  * Created by nelson.mahumane on 20-10-2015.
  */
 public class SendSmsReminderTask extends AbstractTask {
-    private static Log log = LogFactory.getLog(SendSmsReminderTask.class);
+    //private static Log log = LogFactory.getLog(SendSmsReminderTask.class);
+    private Log log = LogFactory.getLog(getClass());
 
     @Override
     public void execute() {

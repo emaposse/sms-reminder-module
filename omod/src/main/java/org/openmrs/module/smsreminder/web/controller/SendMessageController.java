@@ -63,7 +63,6 @@ public class SendMessageController {
 
     @RequestMapping(value = "/module/smsreminder/manual_submission", method = RequestMethod.POST)
     public ModelAndView executeSend(HttpServletRequest request) {
-        //SendMessage sendMessage = new SendMessage();
         SMSClient smsClient = new SMSClient(0);
         List<NotificationPatient> notificationPatients = (List<NotificationPatient>) request.getSession().getAttribute("notificationPatients");
         AdministrationService administrationService = Context.getAdministrationService();
@@ -98,7 +97,6 @@ public class SendMessageController {
                        while (smsClient.status==-1)
                         smsClient.wait();
                      }
-                    //smsClient.sendMessage(smscenter, port, bandRate, Validator.cellNumberValidator(notificationPatient.getTelemovel()), messagem);
                     Sent sent = new Sent();
                     sent.setCellNumber(notificationPatient.getTelemovel());
                     sent.setAlertDate(notificationPatient.getProximaVisita());
