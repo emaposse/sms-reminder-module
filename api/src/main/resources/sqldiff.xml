@@ -215,6 +215,14 @@
 			(property, property_value, description, uuid, datatype, datatype_config, preferred_handler, handler_config)
 			VALUES('smsreminder.remaindays','15,7,2','Specifies the days remain to next visit',UUID(),NULL,NULL,NULL,NULL);
 
+			INSERT INTO global_property
+			(property, property_value, description, uuid, datatype, datatype_config, preferred_handler, handler_config)
+			VALUES('smsreminder.modem','HUAWEI','Specifies the mark of modem',UUID(),NULL,NULL,NULL,NULL);
+
+			INSERT INTO global_property
+			(property, property_value, description, uuid, datatype, datatype_config, preferred_handler, handler_config)
+			VALUES('smsreminder.model','E173','Specifies the model of modem',UUID(),NULL,NULL,NULL,NULL);
+
 			insert into scheduler_task_config
 			(name,description,schedulable_class,start_time,start_time_pattern,repeat_interval,start_on_startup,
 			started,created_by,date_created,changed_by,date_changed,uuid,last_execution_time)

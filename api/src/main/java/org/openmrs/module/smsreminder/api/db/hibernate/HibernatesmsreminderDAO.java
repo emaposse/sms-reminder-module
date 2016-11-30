@@ -92,6 +92,18 @@ public class HibernateSmsReminderDAO implements SmsReminderDAO {
 		return c.list();
 	}
 
+	public List<Sent> getSentByCreated(Date created)throws DAOException{
+		Criteria c = this.sessionFactory.getCurrentSession().createCriteria(Sent.class);
+		c.add(Restrictions.eq("dateCreated", DatasUtil.formatarMysqlDate(created)));
+		return c.list();
+	}
+
+	public List<Sent> getSentBetweenCreatedAndStatus(Date start,Date end,List statuses)throws DAOException{
+		Criteria c = this.sessionFactory.getCurrentSession().createCriteria(Sent.class);
+		c.add(Restrictions.between("dateCreated", DatasUtil.formatarMysqlDate(start), DatasUtil.formatarMysqlDate(end)));
+		c.add(Restrictions.in("status",statuses));
+		return c.list();
+	}
 	public List<Sent> getSentByPatient(Patient patient)throws DAOException{
 		Criteria c = this.sessionFactory.getCurrentSession().createCriteria(Sent.class);
 		c.add(Restrictions.eq("patient",patient));

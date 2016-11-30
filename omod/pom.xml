@@ -71,14 +71,14 @@
 		</dependency>
 		
 		<!-- End OpenMRS core -->
+		<!-- https://mvnrepository.com/artifact/org.smslib/smslib -->
 		<dependency>
 			<groupId>org.smslib</groupId>
 			<artifactId>smslib</artifactId>
-			<version>3.5.4</version>
+			<version>3.5.3</version>
 		</dependency>
 
 	</dependencies>
-
 	<build>
 		<finalName>${project.parent.artifactId}-${project.parent.version}</finalName>
 		<resources>

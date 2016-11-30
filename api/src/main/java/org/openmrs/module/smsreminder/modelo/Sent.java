@@ -14,6 +14,7 @@ public class Sent extends BaseOpenmrsData implements Serializable {
     private Integer sentId;
     private  String cellNumber;
     private Date alertDate;
+    private Date dateCreated;
     private String message;
     private String status;
     private Patient patient;
@@ -71,6 +72,16 @@ public class Sent extends BaseOpenmrsData implements Serializable {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    @Override
+    public Date getDateCreated() {
+        return dateCreated;
+    }
+
+    @Override
+    public void setDateCreated(Date dateCreated) {
+        this.dateCreated = dateCreated;
     }
 
     public Patient getPatient() {

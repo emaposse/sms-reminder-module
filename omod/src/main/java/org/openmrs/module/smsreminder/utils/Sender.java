@@ -107,7 +107,7 @@ public class Sender implements Runnable  {
           case 2:
             expectedResult=result.indexOf("OK");
             //log ("received ok ="+expectedResult);
-              System.out.println("Não condiz:"+result +":"+ expectedResult);
+              //System.out.println("Não condiz:"+result +":"+ expectedResult);
             if (expectedResult>-1){
               mySerial.send("at+cmgf=1");
               startTime=(new Date()).getTime();

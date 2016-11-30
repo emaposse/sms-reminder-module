@@ -102,11 +102,13 @@
 				<artifactId>quartz</artifactId>
 				<version>2.1.5</version>
 			</dependency>
+			<!-- https://mvnrepository.com/artifact/org.smslib/smslib -->
 			<dependency>
 				<groupId>org.smslib</groupId>
 				<artifactId>smslib</artifactId>
-				<version>3.5.4</version>
+				<version>3.5.3</version>
 			</dependency>
+
 		</dependencies>
 	</dependencyManagement>
 
@@ -141,6 +143,7 @@
 			<name>OpenMRS Nexus Repository</name>
 			<url>http://mavenrepo.openmrs.org/nexus/content/repositories/public</url>
 		</repository>
+
 	</repositories>
 
 	<pluginRepositories>
