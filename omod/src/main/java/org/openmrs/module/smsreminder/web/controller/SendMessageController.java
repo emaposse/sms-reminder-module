@@ -1,8 +1,5 @@
 package org.openmrs.module.smsreminder.web.controller;
 
-import org.ajwcc.pduUtils.gsm3040.Pdu;
-import org.ajwcc.pduUtils.gsm3040.PduGenerator;
-import org.ajwcc.pduUtils.gsm3040.SmsStatusReportPdu;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.GlobalProperty;
@@ -15,15 +12,17 @@ import org.openmrs.module.smsreminder.api.SmsReminderService;
 import org.openmrs.module.smsreminder.modelo.NotificationPatient;
 import org.openmrs.module.smsreminder.modelo.Sent;
 import org.openmrs.module.smsreminder.utils.*;
-import org.smslib.*;
+import org.smslib.InboundMessage;
+import org.smslib.OutboundMessage;
+import org.smslib.Service;
 import org.smslib.modem.SerialModemGateway;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
+
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Iterator;
