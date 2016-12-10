@@ -14,9 +14,5 @@ public class SmsReminderProperty {
     public static final String BAUDRATE="smsreminder.bandRate";
     public static final String MODEM="smsreminder.modem";
     public static final String MODEL="smsreminder.model";
-
-private Context context;
-
-
-
+    private Context context;
 }
