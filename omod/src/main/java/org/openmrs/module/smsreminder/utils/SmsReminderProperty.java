@@ -1,6 +1,7 @@
 package org.openmrs.module.smsreminder.utils;
 
 import org.openmrs.GlobalProperty;
+import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
 /**
  * Created by Nelson.Mahumane on 01-12-2016.
@@ -14,5 +15,9 @@ public class SmsReminderProperty {
     public static final String BAUDRATE="smsreminder.bandRate";
     public static final String MODEM="smsreminder.modem";
     public static final String MODEL="smsreminder.model";
-    private Context context;
+
+    final AdministrationService administrationService = Context.getAdministrationService();
+
+
+
 }

@@ -76,6 +76,7 @@ import java.util.List;
 
                 try {
                     synchronized(smsClient) {
+
                         smsClient.sendMessage(smscenter, port, bandRate, Validator.cellNumberValidator(notificationPatient.getTelemovel()), messagem);
                         while (smsClient.status==-1)
                             smsClient.wait();

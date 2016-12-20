@@ -32,6 +32,13 @@ public class DatasUtil {
         Calendar calendario = new GregorianCalendar();
         return calendario.getTime();
     }
+    public static  int searchWeekendBeforeTargetDay( Calendar calendario,int daysBefore ) {
+        int dayOfWeek=0;
+        int diaSemana=calendario.get(Calendar.DAY_OF_WEEK);
+        calendario.add(diaSemana,daysBefore);
+        dayOfWeek=calendario.get(Calendar.DAY_OF_WEEK);
+        return dayOfWeek;
+    }
 
     public static String formatarData(Date data) {
         DateFormat formatoData = new SimpleDateFormat(FORMATO_DATA);
@@ -57,8 +64,6 @@ public class DatasUtil {
         return formatoData.format(data);
     }
 
-    
-    
     public static Date formatoHora(String data) {
       Date date=null;
             DateFormat formatoData = new SimpleDateFormat(FORMATO_HORA);

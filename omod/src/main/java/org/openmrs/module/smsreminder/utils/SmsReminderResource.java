@@ -29,7 +29,6 @@ public class SmsReminderResource {
      * @return List
      */
     public static List<NotificationPatient> getAllNotificationPatiens() {
-
         final AdministrationService administrationService = Context.getAdministrationService();
         PatientService patientService = Context.getPatientService();
         SmsReminderService smsReminderService = SmsReminderUtils.getService();

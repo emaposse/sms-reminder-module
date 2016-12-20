@@ -17,8 +17,8 @@ public class SmsReminderHandler {
        // gateway.getATHandler().setStorageLocations("ME");//iguala a MT
         // gateway.getATHandler().setStorageLocations("MT");//ambos cartao sim e memoria do modem
         //gateway.getATHandler().setStorageLocations("SM");//cartao sim
-       // gateway.getATHandler().setStorageLocations("ME");//memoria do modem
-        //gateway.getATHandler().setStorageLocations("MESR");
+       //gateway.getATHandler().setStorageLocations("ME");//memoria do modem
+        gateway.getATHandler().setStorageLocations("SR");//memoria de delivery
         if (required)
             gateway.setSimPin(simPin);
         return gateway;
