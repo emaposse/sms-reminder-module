@@ -45,13 +45,6 @@ import org.springframework.web.servlet.view.RedirectView;
 @SessionAttributes("notificationPatients")
 public class SendMessageController {
 
-	@PostConstruct
-	public void init() {
-
-	}
-
-	private int MAX = 100;
-
 	private Log log = LogFactory.getLog(getClass());
 
 	private SmsReminderHandler smsReminderHandler = new SmsReminderHandler();
