@@ -87,8 +87,19 @@ public class SendMessageController {
 		List<String> asList = Arrays.asList(numbers.split(","));
 
 		for (String number : asList) {
-			sendMessage(smscenter, port, bandRate, number, "Serão enviadas " + notificationPatients.size() + " Para "
-					+ locationService.getLocation(Integer.valueOf(us)).getName());
+			if (notificationPatients.size() > 1) {
+				sendMessage(smscenter, port, bandRate, number,
+						"Serão enviadas " + notificationPatients.size()
+								+ " Mensagens para Pacientes da Unidade Sanitária"
+								+ locationService.getLocation(Integer.valueOf(us)).getName());
+			}
+
+			if (notificationPatients.size() == 1) {
+				sendMessage(smscenter, port, bandRate, number,
+						"Sera enviada " + notificationPatients.size() + " Mensagem para Paciente da Unidade Sanitária"
+								+ locationService.getLocation(Integer.valueOf(us)).getName());
+			}
+
 		}
 
 		if (notificationPatients != null && !notificationPatients.isEmpty()) {
@@ -117,8 +128,20 @@ public class SendMessageController {
 			}
 
 			for (String number : asList) {
-				sendMessage(smscenter, port, bandRate, number, "Foram enviadas " + notificationPatients.size()
-						+ " Para " + locationService.getLocation(Integer.valueOf(us)).getName());
+				if (notificationPatients.size() > 1) {
+					sendMessage(smscenter, port, bandRate, number,
+							"Foram enviadas " + notificationPatients.size()
+									+ " Mensagens para Pacientes da Unidade Sanitária"
+									+ locationService.getLocation(Integer.valueOf(us)).getName());
+				}
+
+				if (notificationPatients.size() == 1) {
+					sendMessage(smscenter, port, bandRate, number,
+							"Foi enviado " + notificationPatients.size()
+									+ " Mensagem para Paciente da Unidade Sanitária"
+									+ locationService.getLocation(Integer.valueOf(us)).getName());
+				}
+
 			}
 
 		}
