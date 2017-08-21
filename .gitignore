@@ -1,1 +1,12 @@
 .idea
+.project
+.settings
+.classpath
+.class
+.externalToolBuilders/
+ .gitignore
+omod/maven-eclipse.xml
+omod/target/smsreminder-1.0.omod
+api/target/classes/clear
+
+
