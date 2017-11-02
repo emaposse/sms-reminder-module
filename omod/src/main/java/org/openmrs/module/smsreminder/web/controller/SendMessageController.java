@@ -43,67 +43,67 @@ import org.springframework.web.servlet.view.RedirectView;
 @SessionAttributes("notificationPatients")
 public class SendMessageController {
 
-	private Log log = LogFactory.getLog(getClass());
+	private final Log log = LogFactory.getLog(this.getClass());
 
-	private SmsReminderHandler smsReminderHandler = new SmsReminderHandler();
+	private final SmsReminderHandler smsReminderHandler = new SmsReminderHandler();
 	SerialModemGateway aGateway = null;
 
 	@RequestMapping(value = "/module/smsreminder/manual_submission", method = RequestMethod.GET)
 	public ModelAndView patientList() {
-		ModelAndView modelAndView = new ModelAndView();
+		final ModelAndView modelAndView = new ModelAndView();
 		modelAndView.addObject("notificationPatients", SmsReminderResource.getAllNotificationPatiens());
 		return modelAndView;
 	}
 
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/module/smsreminder/manual_submission", method = RequestMethod.POST)
-	public ModelAndView executeSend(HttpServletRequest request) {
+	public ModelAndView executeSend(final HttpServletRequest request) {
 
-		SMSClient smsClient = new SMSClient(0);
-		List<NotificationPatient> notificationPatients = (List<NotificationPatient>) request.getSession()
+		final SMSClient smsClient = new SMSClient(0);
+		final List<NotificationPatient> notificationPatients = (List<NotificationPatient>) request.getSession()
 				.getAttribute("notificationPatients");
-		AdministrationService administrationService = Context.getAdministrationService();
-		GlobalProperty gpSmscenter = administrationService.getGlobalPropertyObject("smsreminder.smscenter");
-		String smscenter = gpSmscenter.getPropertyValue();
-		GlobalProperty gpPort = administrationService.getGlobalPropertyObject("smsreminder.port");
+		final AdministrationService administrationService = Context.getAdministrationService();
+		final GlobalProperty gpSmscenter = administrationService.getGlobalPropertyObject("smsreminder.smscenter");
+		final String smscenter = gpSmscenter.getPropertyValue();
+		final GlobalProperty gpPort = administrationService.getGlobalPropertyObject("smsreminder.port");
 
-		GlobalProperty gpHis = administrationService.getGlobalPropertyObject("smsreminder.his");
-		String numbers = gpHis.getPropertyValue();
+		final GlobalProperty gpHis = administrationService.getGlobalPropertyObject("smsreminder.his");
+		final String numbers = gpHis.getPropertyValue();
 
-		String port = gpPort.getPropertyValue();
-		GlobalProperty gpMessage = administrationService.getGlobalPropertyObject("smsreminder.message");
-		String message = gpMessage.getPropertyValue();
-		GlobalProperty gpUs = administrationService.getGlobalPropertyObject("smsreminder.us");
-		String us = gpUs.getPropertyValue();
-		GlobalProperty gpBandRate = administrationService.getGlobalPropertyObject("smsreminder.bandRate");
-		int bandRate = Integer.parseInt(gpBandRate.getPropertyValue());
+		final String port = gpPort.getPropertyValue();
+		final GlobalProperty gpMessage = administrationService.getGlobalPropertyObject("smsreminder.message");
+		final String message = gpMessage.getPropertyValue();
+		final GlobalProperty gpUs = administrationService.getGlobalPropertyObject("smsreminder.us");
+		final String us = gpUs.getPropertyValue();
+		final GlobalProperty gpBandRate = administrationService.getGlobalPropertyObject("smsreminder.bandRate");
+		final int bandRate = Integer.parseInt(gpBandRate.getPropertyValue());
 
-		SmsReminderService smsReminderService = SmsReminderUtils.getService();
-		PatientService patientService = Context.getPatientService();
-		LocationService locationService = Context.getLocationService();
+		final SmsReminderService smsReminderService = SmsReminderUtils.getService();
+		final PatientService patientService = Context.getPatientService();
+		final LocationService locationService = Context.getLocationService();
 
-		List<String> asList = Arrays.asList(numbers.split(","));
+		final List<String> asList = Arrays.asList(numbers.split(","));
 
-		for (String number : asList) {
+		for (final String number : asList) {
 			if (notificationPatients.size() > 1) {
-				sendMessage(smscenter, port, bandRate, number,
+				this.sendMessage(smscenter, port, bandRate, number,
 						"Serão enviadas " + notificationPatients.size()
 								+ " Mensagens para Pacientes da Unidade Sanitária"
 								+ locationService.getLocation(Integer.valueOf(us)).getName());
 			}
 
 			if (notificationPatients.size() == 1) {
-				sendMessage(smscenter, port, bandRate, number,
+				this.sendMessage(smscenter, port, bandRate, number,
 						"Sera enviada " + notificationPatients.size() + " Mensagem para Paciente da Unidade Sanitária"
 								+ locationService.getLocation(Integer.valueOf(us)).getName());
 			}
 
 		}
 
-		if (notificationPatients != null && !notificationPatients.isEmpty()) {
-			for (NotificationPatient notificationPatient : notificationPatients) {
+		if ((notificationPatients != null) && !notificationPatients.isEmpty()) {
+			for (final NotificationPatient notificationPatient : notificationPatients) {
 
-				String messagem = (notificationPatient.getSexo().equals("M"))
+				final String messagem = (notificationPatient.getSexo().equals("M"))
 						? "O sr: " + notificationPatient.getNome() + " " + message + " " + "no "
 								+ locationService.getLocation(Integer.valueOf(us)).getName() + " " + "no dia "
 								+ DatasUtil.formatarDataPt(notificationPatient.getProximaVisita())
@@ -111,9 +111,9 @@ public class SendMessageController {
 								+ locationService.getLocation(Integer.valueOf(us)).getName() + " " + "no dia "
 								+ DatasUtil.formatarDataPt(notificationPatient.getProximaVisita());
 
-				sendMessage(smscenter, port, bandRate, notificationPatient.getTelemovel(), messagem);
+				this.sendMessage(smscenter, port, bandRate, notificationPatient.getTelemovel(), messagem);
 
-				Sent sent = new Sent();
+				final Sent sent = new Sent();
 				sent.setCellNumber(notificationPatient.getTelemovel());
 				sent.setAlertDate(notificationPatient.getProximaVisita());
 				sent.setMessage(messagem);
@@ -124,14 +124,14 @@ public class SendMessageController {
 
 			for (String number : asList) {
 				if (notificationPatients.size() > 1) {
-					sendMessage(smscenter, port, bandRate, number,
+					this.sendMessage(smscenter, port, bandRate, number,
 							"Foram enviadas " + notificationPatients.size()
 									+ " Mensagens para Pacientes da Unidade Sanitaria"
 									+ locationService.getLocation(Integer.valueOf(us)).getName());
 				}
 
 				if (notificationPatients.size() == 1) {
-					sendMessage(smscenter, port, bandRate, number,
+					this.sendMessage(smscenter, port, bandRate, number,
 							"Foi enviado " + notificationPatients.size()
 									+ " Mensagem para Paciente da Unidade Sanitaria"
 									+ locationService.getLocation(Integer.valueOf(us)).getName());
@@ -146,18 +146,19 @@ public class SendMessageController {
 				new RedirectView(request.getContextPath() + "/module/smsreminder/manual_submission.form"));
 	}
 
-	public void sendMessage(String smscenter, String porta, int bandRate, String recipient, String message) {
-		SMSClient smsClient = new SMSClient(0);
+	public void sendMessage(final String smscenter, final String porta, final int bandRate, final String recipient, final String message) {
+		final SMSClient smsClient = new SMSClient(0);
 
 		try {
 			synchronized (smsClient) {
 				smsClient.sendMessage(smscenter, porta, bandRate, Validator.cellNumberValidator(recipient), message);
 
-				while (smsClient.status == -1)
+				while (smsClient.status == -1) {
 					smsClient.wait();
+				}
 
 			}
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			e.printStackTrace();
 		}
 
@@ -168,60 +169,62 @@ public class SendMessageController {
 
 	@RequestMapping(value = "/module/smsreminder/smslib_manual_submission", method = RequestMethod.GET)
 	public ModelAndView patientListSMSLIB() {
-		ModelAndView modelAndView = new ModelAndView();
+		final ModelAndView modelAndView = new ModelAndView();
 		modelAndView.addObject("notificationPatients", SmsReminderResource.getAllNotificationPatiens());
 		return modelAndView;
 	}
 
 	@RequestMapping(value = "/module/smsreminder/smslib_manual_submission", method = RequestMethod.POST)
-	public ModelAndView executeSendSmsLib(HttpServletRequest request) {
+	public ModelAndView executeSendSmsLib(final HttpServletRequest request) {
 
-		AdministrationService administrationService = Context.getAdministrationService();
-		GlobalProperty gpSmscenter = administrationService.getGlobalPropertyObject("smsreminder.smscenter");
-		String smscenter = gpSmscenter.getPropertyValue();
-		GlobalProperty gpPort = administrationService.getGlobalPropertyObject("smsreminder.port");
-		String port = gpPort.getPropertyValue();
-		GlobalProperty gpMessage = administrationService.getGlobalPropertyObject("smsreminder.message");
-		String message = gpMessage.getPropertyValue();
-		GlobalProperty gpUs = administrationService.getGlobalPropertyObject("smsreminder.us");
-		String us = gpUs.getPropertyValue();
-		GlobalProperty gpSimPin = administrationService.getGlobalPropertyObject("smsreminder.simPin");
-		String simPin = gpSimPin.getPropertyValue();
-		GlobalProperty gpBandRate = administrationService.getGlobalPropertyObject("smsreminder.bandRate");
-		int bandRate = Integer.parseInt(gpBandRate.getPropertyValue());
+		final AdministrationService administrationService = Context.getAdministrationService();
+		final GlobalProperty gpSmscenter = administrationService.getGlobalPropertyObject("smsreminder.smscenter");
+		final String smscenter = gpSmscenter.getPropertyValue();
+		final GlobalProperty gpPort = administrationService.getGlobalPropertyObject("smsreminder.port");
+		final String port = gpPort.getPropertyValue();
+		final GlobalProperty gpMessage = administrationService.getGlobalPropertyObject("smsreminder.message");
+		final String message = gpMessage.getPropertyValue();
+		final GlobalProperty gpUs = administrationService.getGlobalPropertyObject("smsreminder.us");
+		final String us = gpUs.getPropertyValue();
+		final GlobalProperty gpSimPin = administrationService.getGlobalPropertyObject("smsreminder.simPin");
+		final String simPin = gpSimPin.getPropertyValue();
+		final GlobalProperty gpBandRate = administrationService.getGlobalPropertyObject("smsreminder.bandRate");
+		final int bandRate = Integer.parseInt(gpBandRate.getPropertyValue());
 
-		GlobalProperty gpModem = administrationService.getGlobalPropertyObject("smsreminder.modem");
-		String modem = gpModem.getPropertyValue();
-		GlobalProperty gpModel = administrationService.getGlobalPropertyObject("smsreminder.model");
-		String model = gpModel.getPropertyValue();
+		final GlobalProperty gpModem = administrationService.getGlobalPropertyObject("smsreminder.modem");
+		final String modem = gpModem.getPropertyValue();
+		final GlobalProperty gpModel = administrationService.getGlobalPropertyObject("smsreminder.model");
+		final String model = gpModel.getPropertyValue();
 
-		SmsReminderService smsReminderService = SmsReminderUtils.getService();
-		PatientService patientService = Context.getPatientService();
-		LocationService locationService = Context.getLocationService();
+		final SmsReminderService smsReminderService = SmsReminderUtils.getService();
+		final PatientService patientService = Context.getPatientService();
+		final LocationService locationService = Context.getLocationService();
 
-		if (aGateway == null)
-			aGateway = smsReminderHandler.create(smscenter, port, bandRate, simPin, false, modem, model);
+		if (this.aGateway == null) {
+			this.aGateway = this.smsReminderHandler.create(smscenter, port, bandRate, simPin, false, modem, model);
+		}
 
 		@SuppressWarnings("unchecked")
+		final
 		List<NotificationPatient> notificationPatients = (List<NotificationPatient>) request.getSession()
 				.getAttribute("notificationPatients");
-		if (notificationPatients != null && !notificationPatients.isEmpty()) {
+		if ((notificationPatients != null) && !notificationPatients.isEmpty()) {
 			try {
-				OutboundNotification outboundNotification = new OutboundNotification();
-				InboundNotification inboundNotification = new InboundNotification();
-				GatewayStatusNotification statusNotification = new GatewayStatusNotification();
+				final OutboundNotification outboundNotification = new OutboundNotification();
+				final InboundNotification inboundNotification = new InboundNotification();
+				final GatewayStatusNotification statusNotification = new GatewayStatusNotification();
 
-				log.info("Checking for service before send sms: " + Service.getInstance().getServiceStatus());
+				this.log.info("Checking for service before send sms: " + Service.getInstance().getServiceStatus());
 				if (Service.getInstance().getServiceStatus().equals(Service.ServiceStatus.STOPPED)) {
 					Service.getInstance().setOutboundMessageNotification(outboundNotification);
 					Service.getInstance().setInboundMessageNotification(inboundNotification);
 					Service.getInstance().setGatewayStatusNotification(statusNotification);
-					Service.getInstance().addGateway(aGateway);
+					Service.getInstance().addGateway(this.aGateway);
 					Service.getInstance().startService();
 				}
-				log.info("Start Send messages from a serial gsm modem.");
-				for (NotificationPatient notificationPatient : notificationPatients) {
-					String messagem = (notificationPatient.getSexo().equals("M"))
+				this.log.info("Start Send messages from a serial gsm modem.");
+				for (final NotificationPatient notificationPatient : notificationPatients) {
+					final String messagem = (notificationPatient.getSexo().equals("M"))
 							? "O sr: " + notificationPatient.getNome() + " " + message + " "
 									+ "no " + locationService.getLocation(Integer.valueOf(us)).getName() + " "
 									+ "no dia  " + DatasUtil.formatarDataPt(notificationPatient.getProximaVisita())
@@ -229,14 +232,14 @@ public class SendMessageController {
 									+ locationService.getLocation(Integer.valueOf(us)).getName() + " " + "no dia  "
 									+ DatasUtil.formatarDataPt(notificationPatient.getProximaVisita());
 					// Send a message synchronously.
-					OutboundMessage msg = new OutboundMessage(
+					final OutboundMessage msg = new OutboundMessage(
 							Validator.cellNumberValidator(notificationPatient.getTelemovel()), messagem);
 					msg.setStatusReport(true);
-					log.info("Sending sms for: " + Validator.cellNumberValidator(notificationPatient.getTelemovel()));
-					boolean confirm = Service.getInstance().sendMessage(msg);
-					log.info(msg);
+					this.log.info("Sending sms for: " + Validator.cellNumberValidator(notificationPatient.getTelemovel()));
+					final boolean confirm = Service.getInstance().sendMessage(msg);
+					this.log.info(msg);
 					if (confirm) {
-						Sent sent = new Sent();
+						final Sent sent = new Sent();
 						sent.setCellNumber(notificationPatient.getTelemovel());
 						sent.setAlertDate(notificationPatient.getProximaVisita());
 						sent.setMessage(messagem);
@@ -244,14 +247,14 @@ public class SendMessageController {
 						sent.setPatient(patientService.getPatient(notificationPatient.getIdentificador()));
 						sent.setStatus(msg.getMessageStatus().name());
 						smsReminderService.saveSent(sent);
-						log.info("SMS sent for: " + Validator.cellNumberValidator(notificationPatient.getTelemovel()));
+						this.log.info("SMS sent for: " + Validator.cellNumberValidator(notificationPatient.getTelemovel()));
 					}
 				}
-				log.info("End Sent");
+				this.log.info("End Sent");
 				Service.getInstance().stopService();
-				Service.getInstance().removeGateway(aGateway);
-				log.info("Checking for service after send sms : " + Service.getInstance().getServiceStatus());
-			} catch (Exception e) {
+				Service.getInstance().removeGateway(this.aGateway);
+				this.log.info("Checking for service after send sms : " + Service.getInstance().getServiceStatus());
+			} catch (final Exception e) {
 				e.printStackTrace();
 			}
 		}
@@ -263,39 +266,38 @@ public class SendMessageController {
 	// ========================================READMESSAGE-INCOMING============================================================
 	@RequestMapping(value = "/module/smsreminder/smslib_manual_read", method = RequestMethod.GET)
 	public ModelAndView smsRead() {
-		ModelAndView modelAndView = new ModelAndView();
+		final ModelAndView modelAndView = new ModelAndView();
 
-		AdministrationService administrationService = Context.getAdministrationService();
-		GlobalProperty gpSmscenter = administrationService.getGlobalPropertyObject("smsreminder.smscenter");
-		String smscenter = gpSmscenter.getPropertyValue();
-		GlobalProperty gpPort = administrationService.getGlobalPropertyObject("smsreminder.port");
-		String port = gpPort.getPropertyValue();
-		GlobalProperty gpSimPin = administrationService.getGlobalPropertyObject("smsreminder.simPin");
-		String simPin = gpSimPin.getPropertyValue();
-		GlobalProperty gpBandRate = administrationService.getGlobalPropertyObject("smsreminder.bandRate");
-		int bandRate = Integer.parseInt(gpBandRate.getPropertyValue());
-		GlobalProperty gpModem = administrationService.getGlobalPropertyObject("smsreminder.modem");
-		String modem = gpModem.getPropertyValue();
-		GlobalProperty gpModel = administrationService.getGlobalPropertyObject("smsreminder.model");
-		String model = gpModel.getPropertyValue();
+		final AdministrationService administrationService = Context.getAdministrationService();
+		final GlobalProperty gpSmscenter = administrationService.getGlobalPropertyObject("smsreminder.smscenter");
+		final String smscenter = gpSmscenter.getPropertyValue();
+		final GlobalProperty gpPort = administrationService.getGlobalPropertyObject("smsreminder.port");
+		final String port = gpPort.getPropertyValue();
+		final GlobalProperty gpSimPin = administrationService.getGlobalPropertyObject("smsreminder.simPin");
+		final String simPin = gpSimPin.getPropertyValue();
+		final GlobalProperty gpBandRate = administrationService.getGlobalPropertyObject("smsreminder.bandRate");
+		final int bandRate = Integer.parseInt(gpBandRate.getPropertyValue());
+		final GlobalProperty gpModem = administrationService.getGlobalPropertyObject("smsreminder.modem");
+		final String modem = gpModem.getPropertyValue();
+		final GlobalProperty gpModel = administrationService.getGlobalPropertyObject("smsreminder.model");
+		final String model = gpModel.getPropertyValue();
 
-		if (aGateway == null)
-			aGateway = smsReminderHandler.create(smscenter, port, bandRate, simPin, false, modem, model);
+		if (this.aGateway == null) {
+			this.aGateway = this.smsReminderHandler.create(smscenter, port, bandRate, simPin, false, modem, model);
+		}
 
 		List<InboundMessage> msgList;
 
-		@SuppressWarnings("unused")
-		String status = null;
-		InboundNotification inboundNotification = new InboundNotification();
-		GatewayStatusNotification statusNotification = new GatewayStatusNotification();
+		final InboundNotification inboundNotification = new InboundNotification();
+		final GatewayStatusNotification statusNotification = new GatewayStatusNotification();
 		try {
-			log.info(" Reading messages from a serial gsm modem.");
+			this.log.info(" Reading messages from a serial gsm modem.");
 			// Set up the notification methods.
-			log.info("Checking for service before read sms: " + Service.getInstance().getServiceStatus());
+			this.log.info("Checking for service before read sms: " + Service.getInstance().getServiceStatus());
 			if (Service.getInstance().getServiceStatus().equals(Service.ServiceStatus.STOPPED)) {
 				Service.getInstance().setInboundMessageNotification(inboundNotification);
 				Service.getInstance().setGatewayStatusNotification(statusNotification);
-				Service.getInstance().addGateway(aGateway);
+				Service.getInstance().addGateway(this.aGateway);
 				Service.getInstance().startService();
 			}
 			msgList = new ArrayList<InboundMessage>();
@@ -304,30 +306,30 @@ public class SendMessageController {
 			Service.getInstance().readMessages(msgList, InboundMessage.MessageClasses.ALL);
 			// if(msgList!=null && !msgList.isEmpty()){
 			// if( Service.getInstance().getInboundMessageCount()>0) {
-			log.info("A Lista é vazia? :" + msgList.isEmpty());
-			for (InboundMessage msg : msgList) {
+			this.log.info("A Lista é vazia? :" + msgList.isEmpty());
+			for (final InboundMessage msg : msgList) {
 				// if(msg.getType().equals(Message.MessageTypes.STATUSREPORT)) {
 				OutboundMessage.MessageStatuses.values();
-				log.info(msg);
-				log.info("Type: " + msg.getType());
-				log.info(msg.getOriginator());
-				log.info("Text: " + msg.getText());
-				log.info("Date: " + msg.getDate());
-				log.info("MpRefNo: " + msg.getMpRefNo());
-				log.info("MpSeqNo: " + msg.getMpSeqNo());
+				this.log.info(msg);
+				this.log.info("Type: " + msg.getType());
+				this.log.info(msg.getOriginator());
+				this.log.info("Text: " + msg.getText());
+				this.log.info("Date: " + msg.getDate());
+				this.log.info("MpRefNo: " + msg.getMpRefNo());
+				this.log.info("MpSeqNo: " + msg.getMpSeqNo());
 
 				// }
 				// Service.getInstance().deleteMessage(msg);
 			}
 			// }
 			// }
-			log.info("End reading SMS");
+			this.log.info("End reading SMS");
 			Service.getInstance().stopService();
-			Service.getInstance().removeGateway(aGateway);
+			Service.getInstance().removeGateway(this.aGateway);
 
-			log.info("Checking for service after read sms : " + Service.getInstance().getServiceStatus());
+			this.log.info("Checking for service after read sms : " + Service.getInstance().getServiceStatus());
 			modelAndView.addObject("openmrs_msg", "smsreminder.smslib_manual_read.success");
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			modelAndView.addObject("openmrs_msg", "smsreminder.smslib_manual_read.error");
 			e.printStackTrace();
 		}
@@ -335,7 +337,7 @@ public class SendMessageController {
 	}
 
 	@RequestMapping(value = "/module/smsreminder/smslib_manual_read", method = RequestMethod.POST)
-	public void executeReadSmslibRead(HttpServletRequest request) {
+	public void executeReadSmslibRead(final HttpServletRequest request) {
 
 	}
 

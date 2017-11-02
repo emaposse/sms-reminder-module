@@ -13,19 +13,21 @@
  */
 package org.openmrs.module.smsreminder.api;
 
+import java.util.Date;
+import java.util.List;
+
 import org.openmrs.Patient;
 import org.openmrs.annotation.Authorized;
 import org.openmrs.api.APIException;
 import org.openmrs.api.OpenmrsService;
+import org.openmrs.module.smsreminder.modelo.NotificationFollowUpPatient;
 import org.openmrs.module.smsreminder.modelo.NotificationPatient;
 import org.openmrs.module.smsreminder.modelo.Sent;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.List;
-
 /**
- * This service exposes module's core functionality. It is a Spring managed bean which is configured in moduleApplicationContext.xml.
+ * This service exposes module's core functionality. It is a Spring managed bean
+ * which is configured in moduleApplicationContext.xml.
  * <p>
  * It can be accessed only via Context:<br>
  * <code>
@@ -42,39 +44,53 @@ public interface SmsReminderService extends OpenmrsService {
 	 * 
 	 */
 
-	@Authorized({"Manage sent"})
-	public Sent saveSent(Sent sent)	;
+	@Authorized({ "Manage sent" })
+	public Sent saveSent(Sent sent);
+
 	@Transactional
-	@Authorized({"view Sent"})
-	public List<Sent> getAllSent()throws APIException;
+	@Authorized({ "view Sent" })
+	public List<Sent> getAllSent() throws APIException;
+
 	@Transactional
-	@Authorized({"view Sent"})
-	public Sent getSentById(Integer id)throws APIException;
+	@Authorized({ "view Sent" })
+	public Sent getSentById(Integer id) throws APIException;
+
 	@Transactional
-	@Authorized({"view Sent"})
-	public List<Sent> getSentByCellNumber(String cellNumber)throws APIException;
-	@Authorized({"view Sent"})
-	public List<Sent> getSentByAlertDate(Date alertDate)throws APIException;
+	@Authorized({ "view Sent" })
+	public List<Sent> getSentByCellNumber(String cellNumber) throws APIException;
+
+	@Authorized({ "view Sent" })
+	public List<Sent> getSentByAlertDate(Date alertDate) throws APIException;
+
 	@Transactional
-	@Authorized({"view Sent"})
-	public List<Sent> getSentByMessage(String message)throws APIException;
+	@Authorized({ "view Sent" })
+	public List<Sent> getSentByMessage(String message) throws APIException;
+
 	@Transactional
-	@Authorized({"view Sent"})
-	public List<Sent> getSentByStatus(String status)throws APIException;
+	@Authorized({ "view Sent" })
+	public List<Sent> getSentByStatus(String status) throws APIException;
+
 	@Transactional
-	@Authorized({"view Sent"})
-	public List<Sent> getSentByCreated(Date created)throws APIException;
+	@Authorized({ "view Sent" })
+	public List<Sent> getSentByCreated(Date created) throws APIException;
+
+	@SuppressWarnings("rawtypes")
 	@Transactional
-	@Authorized({"view Sent"})
-	public List<Sent> getSentBetweenCreatedAndStatus(Date start,Date end,List status)throws APIException;
+	@Authorized({ "view Sent" })
+	public List<Sent> getSentBetweenCreatedAndStatus(Date start, Date end, List status) throws APIException;
+
 	@Transactional
-	@Authorized({"view Sent"})
-	public List<Sent> getSentByPatient(Patient patient)throws APIException;
+	@Authorized({ "view Sent" })
+	public List<Sent> getSentByPatient(Patient patient) throws APIException;
+
 	@Transactional
-	@Authorized({"view NotificationPatient"})
+	@Authorized({ "view NotificationPatient" })
 	public List<NotificationPatient> getNotificationPatientList() throws APIException;
+
 	@Transactional
-	@Authorized({"view NotificationPatient"})
-	public List<NotificationPatient> getNotificationPatientByDiasRemanescente(Integer days)throws APIException;
+	@Authorized({ "view NotificationPatient" })
+	public List<NotificationPatient> getNotificationPatientByDiasRemanescente(Integer days) throws APIException;
+
+	public List<NotificationFollowUpPatient> searchFollowUpPatient(final Date endDate, final Integer location);
 
 }

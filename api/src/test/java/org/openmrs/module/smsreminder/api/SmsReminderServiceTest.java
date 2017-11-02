@@ -13,19 +13,35 @@
  */
 package org.openmrs.module.smsreminder.api;
 
-import org.junit.Test;
-import org.openmrs.api.context.Context;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
-
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+
+import java.text.ParseException;
+import java.util.List;
+
+import org.junit.Ignore;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.smsreminder.modelo.NotificationFollowUpPatient;
+import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 /**
  * Tests {@link {SmsReminderService}}.
  */
 public class SmsReminderServiceTest extends BaseModuleContextSensitiveTest {
-	
-	@Test
+
 	public void shouldSetupContext() {
 		assertNotNull(Context.getService(SmsReminderService.class));
 	}
+
+	@Ignore
+	public void getNotificationFollowUpPatient() throws ParseException {
+
+		final SmsReminderService smsReminderService = Context.getService(SmsReminderService.class);
+
+		final List<NotificationFollowUpPatient> followUpPatients = smsReminderService.searchFollowUpPatient(null, 5);
+
+		assertFalse(followUpPatients.isEmpty());
+
+	}
+
 }

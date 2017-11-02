@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<hibernate-mapping package="org.openmrs.module.smsreminder.modelo">
+	<class name="org.openmrs.module.smsreminder.modelo.NotificationPatient"
+		table="notificacao_fila" batch-size="25">
+		<composite-id>
+			<key-property name="identificador" type="java.lang.Integer" column="identificador" length="11"/>
+			<key-property name="tipoVisita" type="java.lang.Integer" column="tipo_visita" length="11"/>
+		</composite-id>
+		<!--<id name="nid" type="java.lang.String" column="nid" unsaved-value="">
+			<generator class="native" />
+		</id>
+		<discriminator column="nid" insert="false" />-->
+		<property name="telemovel" type="java.lang.String" column="telemovel" length="10" insert="false"/>
+		<property name="diasRemanescente" type="java.lang.Integer" column="dias_remanescente" length="20" insert="false" />
+		<!--<property name="identificador" type="java.lang.Integer" column="identificador" length="11" insert="false" />
+		<property name="tipoVisita" type="java.lang.Integer" column="tipo_visita" length="11" insert="false" />-->
+		<property name="ultimaVisita" type="java.util.Date" column="ultima_visita"  insert="false" />
+		<property name="proximaVisita" type="java.util.Date" column="proxima_visita" insert="false" />
+		<property name="nid" type="java.lang.String" column="nid" insert="false" />
+		<property name="nome" type="java.lang.String" column="nome_completo" insert="false" />
+		<property name="sexo" type="java.lang.String" column="sexo" insert="false" />
+		<property name="inicioTarv" type="java.util.Date" column="inicio_tarv" insert="false" />
+	</class>
+</hibernate-mapping>

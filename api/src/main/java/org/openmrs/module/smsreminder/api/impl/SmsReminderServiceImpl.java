@@ -13,87 +13,113 @@
  */
 package org.openmrs.module.smsreminder.api.impl;
 
+import java.util.Date;
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Patient;
 import org.openmrs.api.APIException;
+import org.openmrs.api.db.PatientDAO;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.smsreminder.api.SmsReminderService;
 import org.openmrs.module.smsreminder.api.db.SmsReminderDAO;
+import org.openmrs.module.smsreminder.modelo.NotificationFollowUpPatient;
 import org.openmrs.module.smsreminder.modelo.NotificationPatient;
 import org.openmrs.module.smsreminder.modelo.Sent;
-
-import java.util.Date;
-import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * It is a default implementation of {@link SmsReminderService}.
  */
 public class SmsReminderServiceImpl extends BaseOpenmrsService implements SmsReminderService {
 
-    protected final Log log = LogFactory.getLog(this.getClass());
+	protected final Log log = LogFactory.getLog(this.getClass());
 
-    private SmsReminderDAO dao;
+	private SmsReminderDAO dao;
+	@Autowired
+	private PatientDAO patientDAO;
 
-    /**
-     * @return the dao
-     */
-    public SmsReminderDAO getDao() {
-        return dao;
-    }
+	/**
+	 * @return the dao
+	 */
+	public SmsReminderDAO getDao() {
+		return this.dao;
+	}
 
-    /**
-     * @param dao the dao to set
-     */
-    public void setDao(SmsReminderDAO dao) {
-        this.dao = dao;
-    }
+	/**
+	 * @param dao
+	 *            the dao to set
+	 */
+	public void setDao(final SmsReminderDAO dao) {
+		this.dao = dao;
+	}
 
-//service for Sent
-    public Sent saveSent(Sent sent) {
-        return this.getDao().saveSent(sent);
-    }
+	// service for Sent
+	@Override
+	public Sent saveSent(final Sent sent) {
+		return this.getDao().saveSent(sent);
+	}
 
-    public List<Sent> getAllSent()throws APIException{
-      return this.getDao().getAllSent();
-    }
+	@Override
+	public List<Sent> getAllSent() throws APIException {
+		return this.getDao().getAllSent();
+	}
 
-    public Sent getSentById(Integer id)throws APIException{
-        return this.getDao().getSentById(id);
-    }
+	@Override
+	public Sent getSentById(final Integer id) throws APIException {
+		return this.getDao().getSentById(id);
+	}
 
-    public List<Sent> getSentByCellNumber(String cellNumber)throws APIException{
-        return this.getDao().getSentByCellNumber(cellNumber);
-    }
+	@Override
+	public List<Sent> getSentByCellNumber(final String cellNumber) throws APIException {
+		return this.getDao().getSentByCellNumber(cellNumber);
+	}
 
-   public List<Sent> getSentByAlertDate(Date alertDate)throws APIException{
-        return this.getDao().getSentByAlertDate(alertDate);
-    }
+	@Override
+	public List<Sent> getSentByAlertDate(final Date alertDate) throws APIException {
+		return this.getDao().getSentByAlertDate(alertDate);
+	}
 
-    public List<Sent> getSentByMessage(String message)throws APIException{
-        return this.getDao().getSentByMessage(message);
-    }
+	@Override
+	public List<Sent> getSentByMessage(final String message) throws APIException {
+		return this.getDao().getSentByMessage(message);
+	}
 
-    public List<Sent> getSentByStatus(String status)throws APIException{
-        return this.getDao().getSentByStatus(status);
-    }
-    public List<Sent> getSentByCreated(Date created)throws APIException{
-        return this.getDao().getSentByCreated(created);
-    }
+	@Override
+	public List<Sent> getSentByStatus(final String status) throws APIException {
+		return this.getDao().getSentByStatus(status);
+	}
 
-    public List<Sent> getSentBetweenCreatedAndStatus(Date start,Date end,List statuses)throws APIException{
-      return  this.getDao().getSentBetweenCreatedAndStatus(start,end,statuses) ;
-    }
-    public List<Sent> getSentByPatient(Patient patient)throws APIException{
-        return this.getDao().getSentByPatient(patient);
-    }
+	@Override
+	public List<Sent> getSentByCreated(final Date created) throws APIException {
+		return this.getDao().getSentByCreated(created);
+	}
 
-    public List<NotificationPatient> getNotificationPatientList() throws APIException{
-        return this.getDao().getNotificationPatientList();
-    }
+	@Override
+	public List<Sent> getSentBetweenCreatedAndStatus(final Date start, final Date end, final List statuses)
+			throws APIException {
+		return this.getDao().getSentBetweenCreatedAndStatus(start, end, statuses);
+	}
 
-    public List<NotificationPatient> getNotificationPatientByDiasRemanescente(Integer days)throws APIException{
-        return  this.getDao().getNotificationPatientByDiasRemanescente(days);
-    }
+	@Override
+	public List<Sent> getSentByPatient(final Patient patient) throws APIException {
+		return this.getDao().getSentByPatient(patient);
+	}
+
+	@Override
+	public List<NotificationPatient> getNotificationPatientList() throws APIException {
+		return this.getDao().getNotificationPatientList();
+	}
+
+	@Override
+	public List<NotificationPatient> getNotificationPatientByDiasRemanescente(final Integer days) throws APIException {
+		return this.getDao().getNotificationPatientByDiasRemanescente(days);
+	}
+
+	@Override
+	public List<NotificationFollowUpPatient> searchFollowUpPatient(final Date endDate, final Integer location) {
+		return this.getDao().searotifichFollowUpPatient(endDate, location);
+	}
 
 }

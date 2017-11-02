@@ -1,9 +1,11 @@
 package org.openmrs.module.smsreminder.modelo;
 
-import org.openmrs.BaseOpenmrsData;
-import org.openmrs.Patient;
 import java.io.Serializable;
 import java.util.Date;
+
+import org.openmrs.BaseOpenmrsData;
+import org.openmrs.Patient;
+import org.openmrs.module.smsreminder.utils.SentType;
 
 /**
  * Created by Nelson.Mahumane on 03-09-2015.
@@ -19,88 +21,105 @@ public class Sent extends BaseOpenmrsData implements Serializable {
     private String status;
     private Patient patient;
     private Integer remainDays;
+    private SentType sentType;
 
     public Integer getSentId() {
-        return sentId;
+        return this.sentId;
     }
 
-    public void setSentId(Integer sentId) {
+    public void setSentId(final Integer sentId) {
         this.sentId = sentId;
     }
-    public Integer getId() {
-        return getSentId();
+    @Override
+	public Integer getId() {
+        return this.getSentId();
     }
-    public void setId(Integer id) {
-        setSentId(id);
+    @Override
+	public void setId(final Integer id) {
+        this.setSentId(id);
     }
 
     public String getCellNumber() {
-        return cellNumber;
+        return this.cellNumber;
     }
 
-    public void setCellNumber(String cellNumber) {
+    public void setCellNumber(final String cellNumber) {
         this.cellNumber = cellNumber;
     }
 
     public Date getAlertDate() {
-        return alertDate;
+        return this.alertDate;
     }
 
-    public void setAlertDate(Date alertDate) {
+    public void setAlertDate(final Date alertDate) {
         this.alertDate = alertDate;
     }
 
     public String getMessage() {
-        return message;
+        return this.message;
     }
 
-    public void setMessage(String message) {
+    public void setMessage(final String message) {
         this.message = message;
     }
 
     public Integer getRemainDays() {
-        return remainDays;
+        return this.remainDays;
     }
 
-    public void setRemainDays(Integer remainDays) {
+    public void setRemainDays(final Integer remainDays) {
         this.remainDays = remainDays;
     }
 
     public String getStatus() {
-        return status;
+        return this.status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(final String status) {
         this.status = status;
     }
 
     @Override
     public Date getDateCreated() {
-        return dateCreated;
+        return this.dateCreated;
     }
 
     @Override
-    public void setDateCreated(Date dateCreated) {
+    public void setDateCreated(final Date dateCreated) {
         this.dateCreated = dateCreated;
     }
 
     public Patient getPatient() {
-        return patient;
+        return this.patient;
     }
-    public void setPatient(Patient patient) {
+    public void setPatient(final Patient patient) {
         this.patient = patient;
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Sent)) return false;
-        if (!super.equals(o)) return false;
+    public boolean equals(final Object o) {
+        if (this == o) {
+			return true;
+		}
+        if (!(o instanceof Sent)) {
+			return false;
+		}
+        if (!super.equals(o)) {
+			return false;
+		}
 
-        Sent sent = (Sent) o;
+        final Sent sent = (Sent) o;
 
-        return sentId.equals(sent.sentId);
+        return this.sentId.equals(sent.sentId);
 
     }
+
+	public SentType getSentType() {
+		return this.sentType;
+	}
+
+	public void setSentType(final SentType sentType) {
+		this.sentType = sentType;
+	}
 
 }
