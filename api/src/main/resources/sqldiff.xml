@@ -18,8 +18,7 @@
 		<date>10 jun 2015</date>
 		<description>Sql para criação de tabelas do modulo sms remider</description>
 		<sql>
-			DROP TABLE IF EXISTS smsreminder_sent;
-			CREATE TABLE `smsreminder_sent` (
+			CREATE TABLE IF NOT EXISTS `smsreminder_sent` (
 			`sent_id` int(15) NOT NULL AUTO_INCREMENT,
 			`cell_number` varchar(20) NOT NULL,
 			`alert_date` date NOT NULL,
@@ -229,6 +228,9 @@
 			value('SmsReminderTask','Enviar sms a paciente automaticamente mediante aos requisitos especificos',
 			'org.openmrs.module.smsreminder.scheduler.SendSmsReminderTask','2016-05-24 09:00:00','MM/dd/yyyy HH:mm:ss',
 			86400,0,0,1,current_date,null,null,uuid(), null);
+			
+			INSERT INTO global_property (property,property_value,description,uuid) 
+			VALUES('smsreminder.his', '829091879,842375718', 'Mobile numbers on the HIS team receiving sms notifications',UUID());
 
         </sql>
 	</diff>

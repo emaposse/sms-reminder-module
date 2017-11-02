@@ -2,10 +2,8 @@ package org.openmrs.module.smsreminder.web.controller;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
@@ -121,24 +119,21 @@ public class SendMessageController {
 				sent.setMessage(messagem);
 				sent.setRemainDays(notificationPatient.getDiasRemanescente());
 				sent.setPatient(patientService.getPatient(notificationPatient.getIdentificador()));
-				System.out.println("O Status: " + smsClient.status);
-
-				if (smsClient.status == 0)
-					smsReminderService.saveSent(sent);
+				smsReminderService.saveSent(sent);
 			}
 
 			for (String number : asList) {
 				if (notificationPatients.size() > 1) {
 					sendMessage(smscenter, port, bandRate, number,
 							"Foram enviadas " + notificationPatients.size()
-									+ " Mensagens para Pacientes da Unidade Sanitária"
+									+ " Mensagens para Pacientes da Unidade Sanitaria"
 									+ locationService.getLocation(Integer.valueOf(us)).getName());
 				}
 
 				if (notificationPatients.size() == 1) {
 					sendMessage(smscenter, port, bandRate, number,
 							"Foi enviado " + notificationPatients.size()
-									+ " Mensagem para Paciente da Unidade Sanitária"
+									+ " Mensagem para Paciente da Unidade Sanitaria"
 									+ locationService.getLocation(Integer.valueOf(us)).getName());
 				}
 
