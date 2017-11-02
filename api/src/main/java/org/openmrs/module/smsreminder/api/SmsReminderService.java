@@ -91,6 +91,6 @@ public interface SmsReminderService extends OpenmrsService {
 	@Authorized({ "view NotificationPatient" })
 	public List<NotificationPatient> getNotificationPatientByDiasRemanescente(Integer days) throws APIException;
 
-	public List<NotificationFollowUpPatient> searchFollowUpPatient(final Date endDate, final Integer location);
+	public List<NotificationFollowUpPatient> searchFollowUpPatient(final Integer location);
 
 }

@@ -38,7 +38,7 @@ public class SmsReminderServiceTest extends BaseModuleContextSensitiveTest {
 
 		final SmsReminderService smsReminderService = Context.getService(SmsReminderService.class);
 
-		final List<NotificationFollowUpPatient> followUpPatients = smsReminderService.searchFollowUpPatient(null, 5);
+		final List<NotificationFollowUpPatient> followUpPatients = smsReminderService.searchFollowUpPatient(5);
 
 		assertFalse(followUpPatients.isEmpty());
 
