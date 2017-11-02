@@ -147,13 +147,12 @@ public class SendSmsReminderTask extends AbstractTask {
 			final SmsReminderService smsReminderService = SmsReminderUtils.getService();
 			final PatientService patientService = Context.getPatientService();
 			final LocationService locationService = Context.getLocationService();
-			final SMSClient smsClient = new SMSClient(0);
 
 			final List<String> asList = Arrays.asList(numbers.split(","));
 
 			for (final String number : asList) {
 				if (notificationPatients.size() > 1) {
-					sendMessage(smscenter, port, bandRate, number,
+					this.sendMessage(smscenter, port, bandRate, number,
 							"Serao enviadas " + notificationPatients.size()
 									+ " Mensagens para Pacientes da Unidade Sanitaria"
 									+ locationService.getLocation(Integer.valueOf(us)).getName());
@@ -200,7 +199,7 @@ public class SendSmsReminderTask extends AbstractTask {
 				}
 
 				if (notificationPatients.size() == 1) {
-					sendMessage(smscenter, port, bandRate, number,
+					this.sendMessage(smscenter, port, bandRate, number,
 							"Foi enviada " + notificationPatients.size()
 									+ " Mensagem para Paciente da Unidade Sanitaria"
 									+ locationService.getLocation(Integer.valueOf(us)).getName());
