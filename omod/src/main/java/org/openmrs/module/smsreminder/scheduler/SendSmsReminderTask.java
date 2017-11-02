@@ -58,15 +58,15 @@ public class SendSmsReminderTask extends AbstractTask {
 			for (String number : asList) {
 				if (notificationPatients.size() > 1) {
 					sendMessage(smscenter, port, bandRate, number,
-							"Serão enviadas " + notificationPatients.size()
-									+ " Mensagens para Pacientes da Unidade Sanitária"
+							"Serao enviadas " + notificationPatients.size()
+									+ " Mensagens para Pacientes da Unidade Sanitaria"
 									+ locationService.getLocation(Integer.valueOf(us)).getName());
 				}
 
 				if (notificationPatients.size() == 1) {
 					sendMessage(smscenter, port, bandRate, number,
 							"Sera enviada " + notificationPatients.size()
-									+ " Mensagem para Paciente da Unidade Sanitária"
+									+ " Mensagem para Paciente da Unidade Sanitaria"
 									+ locationService.getLocation(Integer.valueOf(us)).getName());
 				}
 
@@ -91,8 +91,7 @@ public class SendSmsReminderTask extends AbstractTask {
 					sent.setMessage(messagem);
 					sent.setRemainDays(notificationPatient.getDiasRemanescente());
 					sent.setPatient(patientService.getPatient(notificationPatient.getIdentificador()));
-					if (smsClient.status == 0)
-						smsReminderService.saveSent(sent);
+					smsReminderService.saveSent(sent);
 				}
 			}
 
@@ -100,14 +99,14 @@ public class SendSmsReminderTask extends AbstractTask {
 				if (notificationPatients.size() > 1) {
 					sendMessage(smscenter, port, bandRate, number,
 							"Foram enviadas " + notificationPatients.size()
-									+ " Mensagens para Pacientes da Unidade Sanitária"
+									+ " Mensagens para Pacientes da Unidade Sanitaria"
 									+ locationService.getLocation(Integer.valueOf(us)).getName());
 				}
 
 				if (notificationPatients.size() == 1) {
 					sendMessage(smscenter, port, bandRate, number,
-							"Foi enviado " + notificationPatients.size()
-									+ " Mensagem para Paciente da Unidade Sanitária"
+							"Foi enviada " + notificationPatients.size()
+									+ " Mensagem para Paciente da Unidade Sanitaria"
 									+ locationService.getLocation(Integer.valueOf(us)).getName());
 				}
 
