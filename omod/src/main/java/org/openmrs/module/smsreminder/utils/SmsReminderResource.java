@@ -46,8 +46,8 @@ public class SmsReminderResource {
 
 		final SmsReminderService smsReminderService = SmsReminderUtils.getService();
 
-		final List<NotificationFollowUpPatient> notificationFollowUpPatients = (smsReminderService
-				.searchFollowUpPatient(null, 5));
+		final List<NotificationFollowUpPatient> notificationFollowUpPatients = new ArrayList<NotificationFollowUpPatient>();
+		notificationFollowUpPatients.addAll(smsReminderService.searchFollowUpPatient());
 
 		return notificationFollowUpPatients;
 

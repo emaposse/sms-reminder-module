@@ -170,12 +170,12 @@ public class HibernateSmsReminderDAO implements SmsReminderDAO {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<NotificationFollowUpPatient> searchFollowUpPatient(final Integer location) {
+	public List<NotificationFollowUpPatient> searchFollowUpPatient() {
 
 		final String sql = "select patient_id, Date(max_frida.encounter_datetime),  pa.value, datediff(CURDATE(),o.value_datetime) from (Select p.patient_id,max(encounter_datetime) encounter_datetime from "
 				+ "patient p inner join encounter e on e.patient_id=p.patient_id where 	"
 				+ "p.voided=0 and e.voided=0 and e.encounter_type=18 and  "
-				+ "e.location_id=:location and e.encounter_datetime<=CURDATE() group by p.patient_id )"
+				+ "e.encounter_datetime<=CURDATE() group by p.patient_id )"
 				+ "max_frida inner join obs o on o.person_id=max_frida.patient_id "
 				+ "inner join person_attribute pa on (pa.person_id = max_frida.patient_id) "
 				+ "inner join  ( select patient.patient_id AS p, encounter.encounter_datetime AS encounter_datetime "
@@ -190,26 +190,25 @@ public class HibernateSmsReminderDAO implements SmsReminderDAO {
 				+ "and encounter.voided=0 " + "and patient.voided=0 " + "and obs.concept_id = 6309 "
 				+ "and obs.value_coded = 6307 "
 				+ "group by patient.patient_id) consitiu on consitiu.p=max_frida.patient_id "
-				+ "where max_frida.encounter_datetime=o.obs_datetime and o.voided=0 and o.concept_id=5096 and o.location_id=:location "
+				+ "where max_frida.encounter_datetime=o.obs_datetime and o.voided=0 and o.concept_id=5096 "
 				+ "and pa.person_attribute_type_id = 9 and pa.value is not null and pa.voided = 0 "
 				+ "and patient_id not in(select pg.patient_id from 	patient p  "
 				+ "inner join patient_program pg on p.patient_id=pg.patient_id "
 				+ "inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
 				+ "where pg.voided=0 and ps.voided=0 and p.voided=0 and  "
 				+ "pg.program_id=2 and ps.state in (7,8,9,10) and ps.end_date is null and  "
-				+ "ps.start_date<=CURDATE() and location_id=:location " + "union "
+				+ "ps.start_date<=CURDATE() " + "union "
 				+ "select patient_id from (Select p.patient_id,max(encounter_datetime) encounter_datetime from patient p  "
 				+ "inner join encounter e on e.patient_id=p.patient_id "
 				+ "inner join obs o on o.encounter_id=e.encounter_id "
 				+ "where p.voided=0 and e.voided=0 and e.encounter_type in (6,9) and "
 				+ "o.voided=0 and o.concept_id=1255 and o.value_coded<>1260 and  "
-				+ "e.location_id=:location and e.encounter_datetime<=CURDATE() " + "group by p.patient_id) max_mov "
+				+ "e.encounter_datetime<=CURDATE() " + "group by p.patient_id) max_mov "
 				+ "inner join obs o on o.person_id=max_mov.patient_id where max_mov.encounter_datetime=o.obs_datetime "
-				+ "and o.voided=0 and o.concept_id=1410 and o.location_id=:location and datediff(CURDATE(), o.value_datetime) < 1)"
+				+ "and o.voided=0 and o.concept_id=1410  and datediff(CURDATE(), o.value_datetime) < 1)"
 				+ "and datediff(CURDATE(), o.value_datetime) between 1 and 60 Limit 1 ";
 
 		final Query query = this.sessionFactory.getCurrentSession().createSQLQuery(sql);
-		query.setParameter("location", location);
 
 		final List<NotificationFollowUpPatient> notificationFollowUpPatients = new ArrayList<NotificationFollowUpPatient>();
 

@@ -118,8 +118,8 @@ public class SmsReminderServiceImpl extends BaseOpenmrsService implements SmsRem
 	}
 
 	@Override
-	public List<NotificationFollowUpPatient> searchFollowUpPatient(final Integer location) {
-		return this.getDao().searchFollowUpPatient(location);
+	public List<NotificationFollowUpPatient> searchFollowUpPatient() {
+		return this.getDao().searchFollowUpPatient();
 	}
 
 }
