@@ -35,7 +35,7 @@ public class SendSmsReminderTask extends AbstractTask {
 
 		Context.openSession();
 		this.log.info("Starting send SMS ... ");
-		 this.getNotificationPatient();
+		this.getNotificationPatient();
 
 		this.log.info("Sending SMS to Follow Up Patient ... ");
 		this.getNotificationFollowUpPatient();
@@ -201,6 +201,7 @@ public class SendSmsReminderTask extends AbstractTask {
 					sent.setMessage(messagem);
 					sent.setRemainDays(notificationPatient.getDiasRemanescente());
 					sent.setPatient(patientService.getPatient(notificationPatient.getIdentificador()));
+					sent.setSentType(SentType.New_Member);
 					smsReminderService.saveSent(sent);
 				}
 			}

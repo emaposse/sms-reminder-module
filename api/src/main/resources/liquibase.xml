@@ -1,12 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
- 
+
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9
                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
-    <!--
-        See http://www.liquibase.org/manual/home#available_database_refactorings
-        for a list of supported elements and attributes
-    -->
-    
+
+
+	<changeSet id="1.0" author="Eusebio Maposse">
+
+		<validCheckSum>359b735227ecd08421f0524edc8020fe</validCheckSum> <!-- old checksum without specifying date_created -->
+		<validCheckSum>a4b610eb71e47ef228bb0e09e9c55384</validCheckSum> <!-- current checksum with date_created property added -->
+
+		<addColumn schemaName="openmrs" tableName="smsreminder_sent">
+			<column name="sent_type" type="varchar(255)" defaultValue="New_Member" />
+		</addColumn>
+	</changeSet>
+
 </databaseChangeLog>
