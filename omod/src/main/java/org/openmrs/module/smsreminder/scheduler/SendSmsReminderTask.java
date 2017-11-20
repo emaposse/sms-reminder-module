@@ -58,7 +58,7 @@ public class SendSmsReminderTask extends AbstractTask {
 
 				for (final NotificationFollowUpPatient notificationFollowUpPatient : notificationPatients) {
 
-					if (notificationFollowUpPatient.getTotalFollowUpDays().intValue() == 10) {
+					if (notificationFollowUpPatient.getTotalFollowUpDays().intValue() == 4) {
 
 						final String message = "Com saude ha alegria. Lembra-te que tens visita marcada para"
 								+ " o dia " + notificationFollowUpPatient.getNextFila()
