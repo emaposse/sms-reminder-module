@@ -35,7 +35,7 @@ public class SendSmsReminderTask extends AbstractTask {
 
 		Context.openSession();
 		this.log.info("Starting send SMS ... ");
-		this.getNotificationPatient();
+		 this.getNotificationPatient();
 
 		this.log.info("Sending SMS to Follow Up Patient ... ");
 		this.getNotificationFollowUpPatient();
@@ -43,73 +43,88 @@ public class SendSmsReminderTask extends AbstractTask {
 	}
 
 	private void getNotificationFollowUpPatient() {
+		try {
+			final AdministrationService administrationService = Context.getAdministrationService();
 
-		final AdministrationService administrationService = Context.getAdministrationService();
+			final GlobalProperty gpSmscenter = administrationService.getGlobalPropertyObject("smsreminder.smscenter");
+			final String smscenter = gpSmscenter.getPropertyValue();
+			final GlobalProperty gpPort = administrationService.getGlobalPropertyObject("smsreminder.port");
+			final GlobalProperty gpBandRate = administrationService.getGlobalPropertyObject("smsreminder.bandRate");
 
-		final GlobalProperty gpSmscenter = administrationService.getGlobalPropertyObject("smsreminder.smscenter");
-		final String smscenter = gpSmscenter.getPropertyValue();
-		final GlobalProperty gpPort = administrationService.getGlobalPropertyObject("smsreminder.port");
-		final GlobalProperty gpBandRate = administrationService.getGlobalPropertyObject("smsreminder.bandRate");
+			final List<NotificationFollowUpPatient> notificationPatients = SmsReminderResource
+					.getAllNotificationFolowUpPatient();
 
-		final List<NotificationFollowUpPatient> notificationPatients = SmsReminderResource
-				.getAllNotificationFolowUpPatient();
+			if (!notificationPatients.isEmpty()) {
 
-		if (notificationPatients.isEmpty()) {
-			this.shutdown();
-		} else {
+				for (final NotificationFollowUpPatient notificationFollowUpPatient : notificationPatients) {
 
-			for (final NotificationFollowUpPatient notificationFollowUpPatient : notificationPatients) {
+					if (notificationFollowUpPatient.getTotalFollowUpDays().intValue() == 10) {
 
-				if (notificationFollowUpPatient.getTotalFollowUpDays().intValue() == 1) {
+						final String message = "Com saude ha alegria. Lembra-te que tens visita marcada para"
+								+ " o dia " + notificationFollowUpPatient.getNextFila()
+								+ " Vem ao teu hospital,estamos a tua espera!";
 
-					this.sendMessage(smscenter, gpPort.getPropertyValue(),
-							Integer.parseInt(gpBandRate.getPropertyValue()),
-							notificationFollowUpPatient.getPhoneNumber(),
-							"Com saude ha alegria. Lembra-te que tens visita marcada para" + " o dia "
-									+ notificationFollowUpPatient.getNextFila()
-									+ " Vem ao teu hospital,estamos a tua espera!");
-					this.saveSent(notificationFollowUpPatient);
-				}
+						this.sendMessage(smscenter, gpPort.getPropertyValue(),
+								Integer.parseInt(gpBandRate.getPropertyValue()),
+								notificationFollowUpPatient.getPhoneNumber(), message);
+						notificationFollowUpPatient.setNotificationMassage(message);
+						this.saveSent(notificationFollowUpPatient);
+					}
 
-				if (notificationFollowUpPatient.getTotalFollowUpDays().intValue() == 7) {
-					this.sendMessage(smscenter, gpPort.getPropertyValue(),
-							Integer.parseInt(gpBandRate.getPropertyValue()),
-							notificationFollowUpPatient.getPhoneNumber(),
-							"A tua saude e muito importante. Lembra-te que tinhas visita marcada para o dia "
-									+ notificationFollowUpPatient.getNextFila()
-									+ " Nao deixes de vir ao teu hospital!");
-					this.saveSent(notificationFollowUpPatient);
+					if (notificationFollowUpPatient.getTotalFollowUpDays().intValue() == 7) {
+						final String message = "A tua saude e muito importante. Lembra-te que tinhas visita marcada para o dia "
+								+ notificationFollowUpPatient.getNextFila() + " Nao deixes de vir ao teu hospital!";
+						this.sendMessage(smscenter, gpPort.getPropertyValue(),
+								Integer.parseInt(gpBandRate.getPropertyValue()),
+								notificationFollowUpPatient.getPhoneNumber(), message);
+						notificationFollowUpPatient.setNotificationMassage(message);
 
-				}
-				if (notificationFollowUpPatient.getTotalFollowUpDays().intValue() == 15) {
-					this.sendMessage(smscenter, gpPort.getPropertyValue(),
-							Integer.parseInt(gpBandRate.getPropertyValue()),
-							notificationFollowUpPatient.getPhoneNumber(),
-							"A sua saude e' muito importante para si e para a sua familia." + " Lembra-se que esta sem "
-									+ "vir a consulta ha 15 dias.");
-					this.saveSent(notificationFollowUpPatient);
+						this.saveSent(notificationFollowUpPatient);
 
-				}
+					}
+					if (notificationFollowUpPatient.getTotalFollowUpDays().intValue() == 15) {
+						final String message = "A sua saude e' muito importante para si e para a sua familia."
+								+ " Lembra-se que esta sem " + "vir a consulta ha 15 dias.";
+						this.sendMessage(smscenter, gpPort.getPropertyValue(),
+								Integer.parseInt(gpBandRate.getPropertyValue()),
+								notificationFollowUpPatient.getPhoneNumber(), message);
+						this.saveSent(notificationFollowUpPatient);
 
-				if (notificationFollowUpPatient.getTotalFollowUpDays().intValue() == 30) {
-					this.sendMessage(smscenter, gpPort.getPropertyValue(),
-							Integer.parseInt(gpBandRate.getPropertyValue()),
-							notificationFollowUpPatient.getPhoneNumber(),
-							"A sua saude e' muito importante para si e para a sua familia. "
-									+ "Continuamos a sua espera. Nao deixe de vir ao seu hospital.");
-					this.saveSent(notificationFollowUpPatient);
+					}
 
-				}
-				if (notificationFollowUpPatient.getTotalFollowUpDays().intValue() == 60) {
-					this.sendMessage(smscenter, gpPort.getPropertyValue(),
-							Integer.parseInt(gpBandRate.getPropertyValue()),
-							notificationFollowUpPatient.getPhoneNumber(), "Com saude construimos o futuro, "
-									+ "continue a controlar a sua saude no hospital. " + "Estamos a sua espera!");
-					this.saveSent(notificationFollowUpPatient);
+					if (notificationFollowUpPatient.getTotalFollowUpDays().intValue() == 30) {
+						final String message = "A sua saude e' muito importante para si e para a sua familia. "
+								+ "Continuamos a sua espera. Nao deixe de vir ao seu hospital.";
+						this.sendMessage(smscenter, gpPort.getPropertyValue(),
+								Integer.parseInt(gpBandRate.getPropertyValue()),
+								notificationFollowUpPatient.getPhoneNumber(), message);
+						notificationFollowUpPatient.setNotificationMassage(message);
 
+						this.saveSent(notificationFollowUpPatient);
+
+					}
+					if (notificationFollowUpPatient.getTotalFollowUpDays().intValue() == 60) {
+						final String message = "Com saude construimos o futuro, "
+								+ "continue a controlar a sua saude no hospital. " + "Estamos a sua espera!";
+						this.sendMessage(smscenter, gpPort.getPropertyValue(),
+								Integer.parseInt(gpBandRate.getPropertyValue()),
+								notificationFollowUpPatient.getPhoneNumber(), message);
+						notificationFollowUpPatient.setNotificationMassage(message);
+
+						this.saveSent(notificationFollowUpPatient);
+
+					}
 				}
 			}
+		} catch (
+
+		final Throwable t) {
+			this.log.error("Error while sending SMS ", t);
+			throw new APIException(t);
+		} finally {
+			Context.closeSession();
 		}
+		this.log.info("Finish send SMS");
 	}
 
 	private void saveSent(final NotificationFollowUpPatient notificationFollowUpPatient) {
