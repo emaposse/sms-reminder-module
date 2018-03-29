@@ -18,7 +18,6 @@ import org.openmrs.module.smsreminder.modelo.NotificationPatient;
 import org.openmrs.module.smsreminder.modelo.Sent;
 import org.openmrs.module.smsreminder.utils.DatasUtil;
 import org.openmrs.module.smsreminder.utils.SMSClient;
-import org.openmrs.module.smsreminder.utils.SentType;
 import org.openmrs.module.smsreminder.utils.SmsReminderResource;
 import org.openmrs.module.smsreminder.utils.Validator;
 import org.openmrs.scheduler.tasks.AbstractTask;
@@ -34,8 +33,8 @@ public class SendSmsReminderTask extends AbstractTask {
 	public void execute() {
 
 		Context.openSession();
-		this.log.info("Starting send SMS ... ");
-		this.getNotificationPatient();
+		// this.log.info("Starting send SMS ... ");
+		// this.getNotificationPatient();
 
 		this.log.info("Sending SMS to Follow Up Patient ... ");
 		this.getNotificationFollowUpPatient();
@@ -50,6 +49,7 @@ public class SendSmsReminderTask extends AbstractTask {
 			final String smscenter = gpSmscenter.getPropertyValue();
 			final GlobalProperty gpPort = administrationService.getGlobalPropertyObject("smsreminder.port");
 			final GlobalProperty gpBandRate = administrationService.getGlobalPropertyObject("smsreminder.bandRate");
+			final SMSClient smsClient = new SMSClient(0);
 
 			final List<NotificationFollowUpPatient> notificationPatients = SmsReminderResource
 					.getAllNotificationFolowUpPatient();
@@ -95,10 +95,12 @@ public class SendSmsReminderTask extends AbstractTask {
 					if (notificationFollowUpPatient.getTotalFollowUpDays().intValue() == 30) {
 						final String message = "A sua saude e' muito importante para si e para a sua familia. "
 								+ "Continuamos a sua espera. Nao deixe de vir ao seu hospital.";
+
+						notificationFollowUpPatient.setNotificationMassage(message);
+
 						this.sendMessage(smscenter, gpPort.getPropertyValue(),
 								Integer.parseInt(gpBandRate.getPropertyValue()),
 								notificationFollowUpPatient.getPhoneNumber(), message);
-						notificationFollowUpPatient.setNotificationMassage(message);
 
 						this.saveSent(notificationFollowUpPatient);
 
@@ -106,12 +108,22 @@ public class SendSmsReminderTask extends AbstractTask {
 					if (notificationFollowUpPatient.getTotalFollowUpDays().intValue() == 60) {
 						final String message = "Com saude construimos o futuro, "
 								+ "continue a controlar a sua saude no hospital. " + "Estamos a sua espera!";
-						this.sendMessage(smscenter, gpPort.getPropertyValue(),
-								Integer.parseInt(gpBandRate.getPropertyValue()),
-								notificationFollowUpPatient.getPhoneNumber(), message);
-						notificationFollowUpPatient.setNotificationMassage(message);
 
-						this.saveSent(notificationFollowUpPatient);
+						notificationFollowUpPatient.setNotificationMassage(message);
+						try {
+							synchronized (smsClient) {
+								this.sendMessage(smscenter, gpPort.getPropertyValue(),
+										Integer.parseInt(gpBandRate.getPropertyValue()),
+										notificationFollowUpPatient.getPhoneNumber(), message);
+							}
+
+							if (smsClient.status == 0) {
+								this.saveSent(notificationFollowUpPatient);
+							}
+
+						} catch (final Exception e) {
+							e.printStackTrace();
+						}
 
 					}
 				}
@@ -137,7 +149,6 @@ public class SendSmsReminderTask extends AbstractTask {
 		sent.setAlertDate(notificationFollowUpPatient.getNextFila());
 		sent.setRemainDays(notificationFollowUpPatient.getTotalFollowUpDays().intValue());
 		sent.setPatient(patientService.getPatient(notificationFollowUpPatient.getPatientId()));
-		sent.setSentType(SentType.Follow_Up);
 		smsReminderService.saveSent(sent);
 		this.log.info("save SMS");
 
@@ -201,7 +212,6 @@ public class SendSmsReminderTask extends AbstractTask {
 					sent.setMessage(messagem);
 					sent.setRemainDays(notificationPatient.getDiasRemanescente());
 					sent.setPatient(patientService.getPatient(notificationPatient.getIdentificador()));
-					sent.setSentType(SentType.New_Member);
 					smsReminderService.saveSent(sent);
 				}
 			}
