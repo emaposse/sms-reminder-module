@@ -33,8 +33,8 @@ public class SendSmsReminderTask extends AbstractTask {
 	public void execute() {
 
 		Context.openSession();
-		// this.log.info("Starting send SMS ... ");
-		// this.getNotificationPatient();
+		this.log.info("Starting send SMS ... ");
+		this.getNotificationPatient();
 
 		this.log.info("Sending SMS to Follow Up Patient ... ");
 		this.getNotificationFollowUpPatient();
@@ -63,32 +63,45 @@ public class SendSmsReminderTask extends AbstractTask {
 						final String message = "Com saude ha alegria. Lembra-te que tens visita marcada para"
 								+ " o dia " + notificationFollowUpPatient.getNextFila()
 								+ " Vem ao teu hospital,estamos a tua espera!";
+						synchronized (smsClient) {
 
-						this.sendMessage(smscenter, gpPort.getPropertyValue(),
-								Integer.parseInt(gpBandRate.getPropertyValue()),
-								notificationFollowUpPatient.getPhoneNumber(), message);
-						notificationFollowUpPatient.setNotificationMassage(message);
-						this.saveSent(notificationFollowUpPatient);
+							this.sendMessage(smscenter, gpPort.getPropertyValue(),
+									Integer.parseInt(gpBandRate.getPropertyValue()),
+									notificationFollowUpPatient.getPhoneNumber(), message);
+							notificationFollowUpPatient.setNotificationMassage(message);
+						}
+						if (smsClient.status == 0) {
+							this.saveSent(notificationFollowUpPatient);
+						}
 					}
 
 					if (notificationFollowUpPatient.getTotalFollowUpDays().intValue() == 7) {
 						final String message = "A tua saude e muito importante. Lembra-te que tinhas visita marcada para o dia "
 								+ notificationFollowUpPatient.getNextFila() + " Nao deixes de vir ao teu hospital!";
-						this.sendMessage(smscenter, gpPort.getPropertyValue(),
-								Integer.parseInt(gpBandRate.getPropertyValue()),
-								notificationFollowUpPatient.getPhoneNumber(), message);
+
+						synchronized (smsClient) {
+							this.sendMessage(smscenter, gpPort.getPropertyValue(),
+									Integer.parseInt(gpBandRate.getPropertyValue()),
+									notificationFollowUpPatient.getPhoneNumber(), message);
+						}
 						notificationFollowUpPatient.setNotificationMassage(message);
 
-						this.saveSent(notificationFollowUpPatient);
+						if (smsClient.status == 0) {
+							this.saveSent(notificationFollowUpPatient);
+						}
 
 					}
 					if (notificationFollowUpPatient.getTotalFollowUpDays().intValue() == 15) {
 						final String message = "A sua saude e' muito importante para si e para a sua familia."
 								+ " Lembra-se que esta sem " + "vir a consulta ha 15 dias.";
-						this.sendMessage(smscenter, gpPort.getPropertyValue(),
-								Integer.parseInt(gpBandRate.getPropertyValue()),
-								notificationFollowUpPatient.getPhoneNumber(), message);
-						this.saveSent(notificationFollowUpPatient);
+						synchronized (smsClient) {
+							this.sendMessage(smscenter, gpPort.getPropertyValue(),
+									Integer.parseInt(gpBandRate.getPropertyValue()),
+									notificationFollowUpPatient.getPhoneNumber(), message);
+						}
+						if (smsClient.status == 0) {
+							this.saveSent(notificationFollowUpPatient);
+						}
 
 					}
 
@@ -97,12 +110,14 @@ public class SendSmsReminderTask extends AbstractTask {
 								+ "Continuamos a sua espera. Nao deixe de vir ao seu hospital.";
 
 						notificationFollowUpPatient.setNotificationMassage(message);
-
-						this.sendMessage(smscenter, gpPort.getPropertyValue(),
-								Integer.parseInt(gpBandRate.getPropertyValue()),
-								notificationFollowUpPatient.getPhoneNumber(), message);
-
-						this.saveSent(notificationFollowUpPatient);
+						synchronized (smsClient) {
+							this.sendMessage(smscenter, gpPort.getPropertyValue(),
+									Integer.parseInt(gpBandRate.getPropertyValue()),
+									notificationFollowUpPatient.getPhoneNumber(), message);
+						}
+						if (smsClient.status == 0) {
+							this.saveSent(notificationFollowUpPatient);
+						}
 
 					}
 					if (notificationFollowUpPatient.getTotalFollowUpDays().intValue() == 60) {
@@ -173,22 +188,28 @@ public class SendSmsReminderTask extends AbstractTask {
 			final SmsReminderService smsReminderService = SmsReminderUtils.getService();
 			final PatientService patientService = Context.getPatientService();
 			final LocationService locationService = Context.getLocationService();
+			final SMSClient smsClient = new SMSClient(0);
 
 			final List<String> asList = Arrays.asList(numbers.split(","));
 
 			for (final String number : asList) {
 				if (notificationPatients.size() > 1) {
-					this.sendMessage(smscenter, port, bandRate, number,
-							"Serao enviadas " + notificationPatients.size()
-									+ " Mensagens para Pacientes da Unidade Sanitaria"
-									+ locationService.getLocation(Integer.valueOf(us)).getName());
+					synchronized (smsClient) {
+
+						this.sendMessage(smscenter, port, bandRate, number,
+								"Serao enviadas " + notificationPatients.size()
+										+ " Mensagens para Pacientes da Unidade Sanitaria"
+										+ locationService.getLocation(Integer.valueOf(us)).getName());
+					}
 				}
 
 				if (notificationPatients.size() == 1) {
-					this.sendMessage(smscenter, port, bandRate, number,
-							"Sera enviada " + notificationPatients.size()
-									+ " Mensagem para Paciente da Unidade Sanitaria"
-									+ locationService.getLocation(Integer.valueOf(us)).getName());
+					synchronized (smsClient) {
+						this.sendMessage(smscenter, port, bandRate, number,
+								"Sera enviada " + notificationPatients.size()
+										+ " Mensagem para Paciente da Unidade Sanitaria"
+										+ locationService.getLocation(Integer.valueOf(us)).getName());
+					}
 				}
 
 			}
@@ -204,33 +225,45 @@ public class SendSmsReminderTask extends AbstractTask {
 									+ locationService.getLocation(Integer.valueOf(us)).getName() + " " + "no dia  "
 									+ DatasUtil.formatarDataPt(notificationPatient.getProximaVisita());
 
-					this.sendMessage(smscenter, port, bandRate, notificationPatient.getTelemovel(), messagem);
+					try {
+						synchronized (smsClient) {
+							this.sendMessage(smscenter, port, bandRate, notificationPatient.getTelemovel(), messagem);
+						}
 
-					final Sent sent = new Sent();
-					sent.setCellNumber(notificationPatient.getTelemovel());
-					sent.setAlertDate(notificationPatient.getProximaVisita());
-					sent.setMessage(messagem);
-					sent.setRemainDays(notificationPatient.getDiasRemanescente());
-					sent.setPatient(patientService.getPatient(notificationPatient.getIdentificador()));
-					smsReminderService.saveSent(sent);
+						final Sent sent = new Sent();
+						sent.setCellNumber(notificationPatient.getTelemovel());
+						sent.setAlertDate(notificationPatient.getProximaVisita());
+						sent.setMessage(messagem);
+						sent.setRemainDays(notificationPatient.getDiasRemanescente());
+						sent.setPatient(patientService.getPatient(notificationPatient.getIdentificador()));
+
+						if (smsClient.status == 0) {
+							smsReminderService.saveSent(sent);
+						}
+					} catch (final Exception e) {
+						e.printStackTrace();
+					}
 				}
 			}
 
 			for (final String number : asList) {
 				if (notificationPatients.size() > 1) {
-					this.sendMessage(smscenter, port, bandRate, number,
-							"Foram enviadas " + notificationPatients.size()
-									+ " Mensagens para Pacientes da Unidade Sanitaria"
-									+ locationService.getLocation(Integer.valueOf(us)).getName());
+					synchronized (smsClient) {
+						this.sendMessage(smscenter, port, bandRate, number,
+								"Foram enviadas " + notificationPatients.size()
+										+ " Mensagens para Pacientes da Unidade Sanitaria"
+										+ locationService.getLocation(Integer.valueOf(us)).getName());
+					}
 				}
 
 				if (notificationPatients.size() == 1) {
-					this.sendMessage(smscenter, port, bandRate, number,
-							"Foi enviada " + notificationPatients.size()
-									+ " Mensagem para Paciente da Unidade Sanitaria"
-									+ locationService.getLocation(Integer.valueOf(us)).getName());
+					synchronized (smsClient) {
+						this.sendMessage(smscenter, port, bandRate, number,
+								"Foi enviada " + notificationPatients.size()
+										+ " Mensagem para Paciente da Unidade Sanitaria"
+										+ locationService.getLocation(Integer.valueOf(us)).getName());
+					}
 				}
-
 			}
 
 		} catch (
